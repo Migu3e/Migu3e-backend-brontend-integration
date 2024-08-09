@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ClientIdDisplay from '../components/ClientIdDisplay.tsx';
 import WebSocketService from '../services/Utils/WebSocketUtils.tsx';
+import DisconnectButton from '../components/buttons/DisconnectButton.tsx';
+import AudioButton from '../components/buttons/AudioButton.tsx';
+
+
 
 const MainPage: React.FC = () => {
     const [clientId, setClientId] = useState<string | null>(null);
@@ -38,10 +42,10 @@ const MainPage: React.FC = () => {
 
     return (
         <div>
-            <button onClick={handleDisconnect}>Disconnect</button>
+            <DisconnectButton onClick={handleDisconnect} />
             {clientId && <ClientIdDisplay clientId={clientId} />}
             <h1>Radio device thingy</h1>
-            <button onClick={handleTransmit}>Transmit Audio</button>
+            <AudioButton onClick={handleTransmit}></AudioButton>
         </div>
     );
 };
