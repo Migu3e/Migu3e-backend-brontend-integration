@@ -1,45 +1,19 @@
-import { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import ConnectionPage from './view/ConnectionPage.tsx';
+import MainPage from './view/MainPage';
 
-function App() {
-    const [isConnected, setIsConnected] = useState(false);
-    const [socket, setSocket] = useState<WebSocket | null>(null);
-
-    const connectToServer = () => {
-        const newSocket = new WebSocket('ws://localhost:8081');
-
-        newSocket.onopen = () => {
-            console.log('Connected to server');
-            setIsConnected(true);
-
-            // Send a test message to the server
-            newSocket.send('Hello, server!');
-        };
-
-        newSocket.onmessage = (message) => {
-            console.log('Received message:', message.data);
-        };
-
-        setSocket(newSocket);
-    };
-
-    const disconnectFromServer = () => {
-        if (socket) {
-            socket.close();
-            console.log('disconnected from server');
-            setIsConnected(false);
-            setSocket(null);
-        }
-    };
-
+const App: React.FC = () => {
     return (
-        <div className="App">
-            <h1>Server Connection Status</h1>
-            <p>{isConnected ? 'Connected to server' : 'Not connected to server'}</p>
-            <button onClick={isConnected ? disconnectFromServer : connectToServer}>
-                {isConnected ? 'Disconnect' : 'Connect'}
-            </button>
-        </div>
+        <Router>
+            <div className="App">
+                <Routes>
+                    <Route path="/" element={<ConnectionPage />} />
+                    <Route path="/main" element={<MainPage />} />
+                </Routes>
+            </div>
+        </Router>
     );
-}
+};
 
 export default App;
