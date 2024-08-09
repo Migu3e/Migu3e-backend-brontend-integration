@@ -12,9 +12,9 @@ class WebSocketService {
             };
 
             this.socket.onmessage = (event) => {
-                const message = JSON.parse(event.data);
-                if (message.type === 'clientId') {
-                    this.clientId = message.data;
+                const message = event.data as string;
+                if (message != null) {
+                    this.clientId = message;
                     console.log('Received client ID:', this.clientId);
                 }
             };

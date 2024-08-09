@@ -5,7 +5,7 @@ interface ClientIdDisplayProps {
 }
 
 const ClientIdDisplay: React.FC<ClientIdDisplayProps> = ({ clientId }) => {
-    return <div>Client ID: {clientId}</div>;
+    return <div>client id - {clientId}</div>;
 };
 
 export default ClientIdDisplay;

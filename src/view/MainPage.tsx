@@ -4,15 +4,26 @@ import ClientIdDisplay from '../components/ClientIdDisplay.tsx';
 import WebSocketService from '../services/Utils/WebSocketUtils.tsx';
 
 const MainPage: React.FC = () => {
-    const navigate = useNavigate();
     const [clientId, setClientId] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if (!WebSocketService.isConnected()) {
-            navigate('/');
-        } else {
-            setClientId(WebSocketService.getClientId());
-        }
+        const checkConnection = async () => {
+            if (!WebSocketService.isConnected()) {
+                navigate('/');
+            } else
+            {
+                if(WebSocketService.getClientId() !== null)
+                {
+                    setClientId(WebSocketService.getClientId());
+                }
+                console.log(WebSocketService.getClientId());
+            }
+        };
+
+        checkConnection();
+
+
     }, [navigate]);
 
     const handleDisconnect = () => {
@@ -21,23 +32,16 @@ const MainPage: React.FC = () => {
     };
 
     const handleTransmit = () => {
-        console.log('Transmitting audio...');
+        console.log('audio...');
     };
 
-    const DisconnectButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
-        <button onClick={onClick}>Disconnect</button>
-    );
-
-    const TransmitButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
-        <button onClick={onClick}>Transmit Audio</button>
-    );
 
     return (
         <div>
-            <DisconnectButton onClick={handleDisconnect} />
+            <button onClick={handleDisconnect}>Disconnect</button>
             {clientId && <ClientIdDisplay clientId={clientId} />}
-            <h1>Audio Chat</h1>
-            <TransmitButton onClick={handleTransmit} />
+            <h1>Radio device thingy</h1>
+            <button onClick={handleTransmit}>Transmit Audio</button>
         </div>
     );
 };

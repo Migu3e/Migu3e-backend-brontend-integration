@@ -9,10 +9,10 @@ const ConnectionPage: React.FC = () => {
     const handleConnect = async () => {
         try {
             await WebSocketService.connect();
+            await new Promise(resolve => setTimeout(resolve, 1000));
             navigate('/main');
         } catch (error) {
             console.error('Connection error:', error);
-            navigate('/error');
         }
     };
 
