@@ -1,51 +1,91 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ClientIdDisplay from '../components/ClientIdDisplay.tsx';
-import WebSocketService from '../services/Utils/WebSocketUtils.tsx';
-import DisconnectButton from '../components/buttons/DisconnectButton.tsx';
-import AudioButton from '../components/buttons/AudioButton.tsx';
-
-
+import WebSocketService from '../services/Utils/WebSocketUtils';
+import { useNavigate } from "react-router-dom";
 
 const MainPage: React.FC = () => {
     const [clientId, setClientId] = useState<string | null>(null);
+    const [channel, setChannel] = useState<number>(1);
+    const [isTransmitting, setIsTransmitting] = useState<boolean>(false);
+    const [isConnected, setIsConnected] = useState<boolean>(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const checkConnection = async () => {
-            if (!WebSocketService.isConnected()) {
-                navigate('/');
-            } else
-            {
-                if(WebSocketService.getClientId() !== null)
-                {
-                    setClientId(WebSocketService.getClientId());
-                }
-                console.log(WebSocketService.getClientId());
+
+        const connectToServer = async () => {
+            try {
+                await WebSocketService.connect();
+                setIsConnected(true);
+                setClientId(WebSocketService.getClientId());
+            } catch (error) {
+                console.error('Connection error:', error);
+                setIsConnected(false);
             }
         };
 
-        checkConnection();
+        connectToServer();
 
+        return () => {
+            WebSocketService.disconnect();
+        };
+    }, []);
 
-    }, [navigate]);
+    const handleConnect = async () => {
+        try {
+            await WebSocketService.connect();
+            setIsConnected(true);
+            setClientId(WebSocketService.getClientId());
+        } catch (error) {
+            console.error('Connection error:', error);
+        }
+    };
 
     const handleDisconnect = () => {
         WebSocketService.disconnect();
+        setIsConnected(false);
+        setClientId(null);
+        setIsTransmitting(false);
         navigate('/');
     };
 
-    const handleTransmit = () => {
-        console.log('audio...');
+    const handleTransmit = async () => {
+        if (isTransmitting) {
+            WebSocketService.stopTransmission();
+            setIsTransmitting(false);
+        } else {
+            await WebSocketService.startTransmission();
+            setIsTransmitting(true);
+        }
     };
 
+    const handleChannelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const newChannel = parseInt(event.target.value, 10);
+        setChannel(newChannel);
+        WebSocketService.setChannel(newChannel);
+    };
 
     return (
         <div>
-            <DisconnectButton onClick={handleDisconnect} />
-            {clientId && <ClientIdDisplay clientId={clientId} />}
-            <h1>Radio device thingy</h1>
-            <AudioButton onClick={handleTransmit}></AudioButton>
+            <h1>Radio Device</h1>
+            {isConnected ? (
+                <>
+                    <button onClick={handleDisconnect}>Disconnect</button>
+                    {clientId && <div>Client ID: {clientId}</div>}
+                    <div>
+                        <label htmlFor="channel-select">Channel: </label>
+                        <select id="channel-select" value={channel} onChange={handleChannelChange}>
+                            {[...Array(11)].map((_, i) => (
+                                <option key={i + 1} value={i + 1}>{i + 1}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <button onClick={handleTransmit}>
+                        {isTransmitting ? 'Stop Transmitting' : 'Start Transmitting'}
+                    </button>
+                    <div>{isTransmitting ? 'Transmitting...' : 'Not transmitting'}</div>
+                </>
+            ) : (
+                <button onClick={handleConnect}>Connect</button>
+            )}
         </div>
     );
 };
