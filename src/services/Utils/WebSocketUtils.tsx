@@ -1,19 +1,20 @@
-import AudioReceiver from '../Utils/AudioReciver.tsx';
+import TransmissionManager from "./TransmissionManager.tsx";
 
 class WebSocketService {
     private socket: WebSocket | null = null;
     private clientId: string | null = null;
-    private channel: number = 1;
-    private isTransmitting: boolean = false;
-    private mediaRecorder: MediaRecorder | null = null;
-    private audioChunks: Blob[] = [];
-    private audioReceiver: AudioReceiver;
+    private transmissionManager: TransmissionManager;
+    private audioContext: AudioContext | null = null;
+    private sampleRate: number = 44100; // defaltas sample rate
 
     constructor() {
-        this.audioReceiver = new AudioReceiver();
+        this.transmissionManager = new TransmissionManager(
+            this.sendAudioChunk.bind(this),
+            this.sendFullAudio.bind(this)
+        );
     }
 
-    connect(): Promise<void> {
+    public async connect(): Promise<void> {
         return new Promise((resolve, reject) => {
             this.socket = new WebSocket('ws://localhost:8081');
 
@@ -22,14 +23,7 @@ class WebSocketService {
                 resolve();
             };
 
-            this.socket.onmessage = (event) => {
-                if (typeof event.data === 'string') {
-                    this.clientId = event.data;
-                    console.log('Received client ID:', this.clientId);
-                } else if (event.data instanceof ArrayBuffer) {
-                    this.handleIncomingAudio(event.data);
-                }
-            };
+            this.socket.onmessage = this.handleIncomingMessage.bind(this);
 
             this.socket.onerror = (error) => {
                 console.error('WebSocket error:', error);
@@ -43,7 +37,7 @@ class WebSocketService {
         });
     }
 
-    disconnect(): void {
+    public disconnect(): void {
         this.stopTransmission();
         if (this.socket) {
             this.socket.close();
@@ -51,106 +45,102 @@ class WebSocketService {
         }
     }
 
-    isConnected(): boolean {
+    public isConnected(): boolean {
         return this.socket !== null && this.socket.readyState === WebSocket.OPEN;
     }
 
-    getClientId(): string | null {
+    public getClientId(): string | null {
         return this.clientId;
     }
 
-    getSocket(): WebSocket{
-        return this.socket as WebSocket;
+    public setChannel(channel: number): void {
+        this.transmissionManager.setChannel(channel);
     }
 
-    setChannel(channel: number): void {
-        this.channel = channel;
+    public async startTransmission(): Promise<void> {
+        if (!this.isConnected()) {
+            throw new Error('WebSocket is not connected');
+        }
+        await this.transmissionManager.startTransmission();
     }
 
-    getChannel(): number {
-        return this.channel;
+    public stopTransmission(): void {
+        this.transmissionManager.stopTransmission();
     }
 
-    async startTransmission(): Promise<void> {
-        if (!this.isTransmitting) {
-            this.isTransmitting = true;
-            this.audioChunks = [];
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                this.mediaRecorder = new MediaRecorder(stream);
-
-                this.mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        this.audioChunks.push(event.data);
-                        this.sendAudioChunk(event.data);
-                    }
-                };
-
-                this.mediaRecorder.onstop = () => {
-                    this.sendFullAudioTransmission();
-                };
-
-                this.mediaRecorder.start(100); // Capture in 100ms chunks
-            } catch (error) {
-                console.error('microphone:', error);
-                this.isTransmitting = false;
-            }
+    private async handleIncomingMessage(event: MessageEvent): Promise<void> {
+        if (typeof event.data === 'string') {
+            this.clientId = event.data;
+            console.log('Received client ID:', this.clientId);
+        } else if (event.data instanceof ArrayBuffer) {
+            this.handleBinaryMessage(event.data);
+        } else if (event.data instanceof Blob) {
+            const buffer = await event.data.arrayBuffer();
+            this.handleBinaryMessage(buffer);
         }
     }
 
-    stopTransmission(): void {
-        if (this.isTransmitting) {
-            this.isTransmitting = false;
-            if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
-                this.mediaRecorder.stop();
+    private handleBinaryMessage(buffer: ArrayBuffer): void {
+        const data = new Uint8Array(buffer);
+        console.log(`Received binary message of length: ${data.length} bytes`);
+
+        if (data.length < 8) {
+            console.error('Received message is too short to be valid');
+            return;
+        }
+
+        if (data[0] === 0xAA && data[1] === 0xAA && data[2] === 0xAA) {
+            // Real-time audio chunk
+            const receivedChannel = data[3];
+            const audioLength = new Uint32Array(data.buffer, 4, 1)[0];
+            console.log(`Received audio chunk: Channel ${receivedChannel}, Length ${audioLength}`);
+
+            if (data.length < 8 + audioLength) {
+                console.error(`Message length (${data.length}) is less than expected (${8 + audioLength})`);
+                return;
             }
+
+            if (receivedChannel === this.transmissionManager.getChannel()) {
+                const audioData = data.slice(8, 8 + audioLength);
+                console.log(`Playing audio chunk of length ${audioData.length}`);
+                this.playAudioData(audioData.buffer);
+            }
+        } else {
+            console.error('Received message with unknown header');
         }
     }
 
-    private sendAudioChunk(chunk: Blob): void {
+    private async playAudioData(audioData: ArrayBuffer): Promise<void> {
+        if (!this.audioContext) {
+            this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        }
+
+        const int16Data = new Int16Array(audioData);
+
+        const floatData = new Float32Array(int16Data.length);
+        for (let i = 0; i < int16Data.length; i++) {
+            floatData[i] = int16Data[i] / 32768.0;
+        }
+
+        const buffer = this.audioContext.createBuffer(1, floatData.length, this.sampleRate);
+        buffer.getChannelData(0).set(floatData);
+
+        const source = this.audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(this.audioContext.destination);
+        source.start();
+    }
+
+    private sendAudioChunk(audioChunk: ArrayBuffer): void {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.result instanceof ArrayBuffer) {
-                    console.log(chunk);
-                    const header = new Uint8Array([0xAA, 0xAA, 0xAA, this.channel]);
-                    const message = new Uint8Array(header.length + reader.result.byteLength);
-                    message.set(header);
-                    message.set(new Uint8Array(reader.result), header.length);
-                    this.socket!.send(message);
-                    this.audioReceiver.playAudio(reader.result, 0, reader.result.byteLength);
-                }
-            };
-            reader.readAsArrayBuffer(chunk);
+            this.socket.send(audioChunk);
         }
     }
 
-
-    private handleIncomingAudio(data: ArrayBuffer) {
-        const audioData = new Uint8Array(data);
-
-        if (audioData[0] === 0xAA && audioData[1] === 0xAA && audioData[2] === 0xAA) {
-            const channelReceived = audioData[3];
-            if (channelReceived === this.channel) {
-                this.audioReceiver.playAudio(data.slice(4), 0, data.byteLength - 4);
-            }
-        }
-    }
-
-    private sendFullAudioTransmission(): void {
+    private sendFullAudio(fullAudio: ArrayBuffer): void {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            const fullAudio = new Blob(this.audioChunks, { type: 'audio/webm' });
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.result instanceof ArrayBuffer) {
-                    const header = new Uint8Array([0xFF, 0xFF, 0xFF, 0xFF]);
-                    const message = new Uint8Array(header.length + reader.result.byteLength);
-                    message.set(header);
-                    message.set(new Uint8Array(reader.result), header.length);
-                    this.socket!.send(message);
-                }
-            };
-            reader.readAsArrayBuffer(fullAudio);
+            console.log(`Sending full audio of length: ${fullAudio.byteLength} bytes`);
+            this.socket.send(fullAudio);
         }
     }
 }

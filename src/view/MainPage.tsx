@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import WebSocketService from '../services/Utils/WebSocketUtils';
-import {useNavigate} from "react-router-dom";
-import AudioReciver from "../services/Utils/AudioReciver.tsx";
+import { useNavigate } from "react-router-dom";
 
 const MainPage: React.FC = () => {
     const [clientId, setClientId] = useState<string | null>(null);
@@ -11,19 +10,12 @@ const MainPage: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+
         const connectToServer = async () => {
             try {
                 await WebSocketService.connect();
                 setIsConnected(true);
-                await new Promise(resolve => setTimeout(resolve, 1000));
                 setClientId(WebSocketService.getClientId());
-                console.log("sdsdsdds" + WebSocketService.getClientId())
-                const audioReciver = new AudioReciver();
-                const socket = WebSocketService.getSocket();
-                if (WebSocketService.getSocket!== null)
-                {
-                    audioReciver.receiveAudioFromServer(socket);
-                }
             } catch (error) {
                 console.error('Connection error:', error);
                 setIsConnected(false);
@@ -35,7 +27,7 @@ const MainPage: React.FC = () => {
         return () => {
             WebSocketService.disconnect();
         };
-    }, [navigate]);
+    }, []);
 
     const handleConnect = async () => {
         try {
@@ -52,7 +44,7 @@ const MainPage: React.FC = () => {
         setIsConnected(false);
         setClientId(null);
         setIsTransmitting(false);
-        navigate('/')
+        navigate('/');
     };
 
     const handleTransmit = async () => {
@@ -66,7 +58,7 @@ const MainPage: React.FC = () => {
     };
 
     const handleChannelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newChannel = parseInt(event.target.value);
+        const newChannel = parseInt(event.target.value, 10);
         setChannel(newChannel);
         WebSocketService.setChannel(newChannel);
     };
