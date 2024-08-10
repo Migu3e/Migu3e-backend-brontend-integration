@@ -42,7 +42,7 @@ class AudioSender {
                 this.onDataAvailable(audioData.buffer);
             };
 
-            this.mediaRecorder.start(100); // Start recording and emit data every 100ms
+            this.mediaRecorder.start(10); // Start recording and emit data every 100ms
 
         } catch (error) {
             console.error('Error starting audio capture:', error);
