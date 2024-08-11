@@ -90,7 +90,6 @@ class WebSocketService {
         }
 
         if (data[0] === 0xAA && data[1] === 0xAA && data[2] === 0xAA) {
-            // Real-time audio chunk
             const receivedChannel = data[3];
             const audioLength = new Uint32Array(data.buffer, 4, 1)[0];
             console.log(`Received audio chunk: Channel ${receivedChannel}, Length ${audioLength}`);

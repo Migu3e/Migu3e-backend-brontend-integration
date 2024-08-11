@@ -61,13 +61,6 @@ class AudioReceiver {
         this.sourceNode.start();
     }
 
-    public stop(): void {
-        this.isPlaying = false;
-        if (this.sourceNode) {
-            this.sourceNode.stop();
-            this.sourceNode.disconnect();
-        }
-    }
 }
 
 export default AudioReceiver;
