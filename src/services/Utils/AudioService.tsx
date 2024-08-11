@@ -1,9 +1,10 @@
-class AudioSender {
+class AudioService {
     private audioContext: AudioContext | null = null;
     private mediaRecorder: MediaRecorder | null = null;
     private audioChunks: Blob[] = [];
     private onDataAvailable: (data: ArrayBuffer) => void;
     private onStop: () => void;
+    public sampleRate: number = 44100;
 
     constructor(onDataAvailable: (data: ArrayBuffer) => void, onStop: () => void) {
         this.onDataAvailable = onDataAvailable;
@@ -28,6 +29,7 @@ class AudioSender {
                 const arrayBuffer = await fullAudioBlob.arrayBuffer();
                 this.onStop();
                 this.onDataAvailable(arrayBuffer);
+
             };
 
             const source = this.audioContext.createMediaStreamSource(stream);
@@ -39,10 +41,12 @@ class AudioSender {
             processor.onaudioprocess = (e) => {
                 const inputData = e.inputBuffer.getChannelData(0);
                 const audioData = new Float32Array(inputData);
+
                 this.onDataAvailable(audioData.buffer);
             };
 
-            this.mediaRecorder.start(10); // Start recording and emit data every 100ms
+
+            this.mediaRecorder.start(10); // Start recording and emit data every 10ms
 
         } catch (error) {
             console.error('Error starting audio capture:', error);
@@ -74,4 +78,4 @@ class AudioSender {
     }
 }
 
-export default AudioSender;
+export default AudioService;

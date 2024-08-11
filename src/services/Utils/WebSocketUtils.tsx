@@ -1,17 +1,19 @@
-import TransmissionManager from "./TransmissionManager.tsx";
+import AudioService from './AudioService';
+import FullAudioService from './FullAudioMaker.tsx';
 
 class WebSocketService {
     private socket: WebSocket | null = null;
     private clientId: string | null = null;
-    private transmissionManager: TransmissionManager;
-    private audioContext: AudioContext | null = null;
-    private sampleRate: number = 44100; // defaltas sample rate
+    private audioService: AudioService;
+    private fullAudioService: FullAudioService;
+    private sampleRate: number = 44100;
 
     constructor() {
-        this.transmissionManager = new TransmissionManager(
+        this.audioService = new AudioService(
             this.sendAudioChunk.bind(this),
-            this.sendFullAudio.bind(this)
+            this.handleTransmissionStop.bind(this)
         );
+        this.fullAudioService = new FullAudioService(this.audioService, this.sendFullAudio.bind(this));
     }
 
     public async connect(): Promise<void> {
@@ -53,19 +55,17 @@ class WebSocketService {
         return this.clientId;
     }
 
-    public setChannel(channel: number): void {
-        this.transmissionManager.setChannel(channel);
-    }
+
 
     public async startTransmission(): Promise<void> {
         if (!this.isConnected()) {
             throw new Error('WebSocket is not connected');
         }
-        await this.transmissionManager.startTransmission();
+        await this.audioService.start();
     }
 
     public stopTransmission(): void {
-        this.transmissionManager.stopTransmission();
+        this.audioService.stop();
     }
 
     private async handleIncomingMessage(event: MessageEvent): Promise<void> {
@@ -91,48 +91,73 @@ class WebSocketService {
 
         if (data[0] === 0xAA && data[1] === 0xAA && data[2] === 0xAA) {
             const receivedChannel = data[3];
-            const audioLength = new Uint32Array(data.buffer, 4, 1)[0];
-            console.log(`Received audio chunk: Channel ${receivedChannel}, Length ${audioLength}`);
-
-            if (data.length < 8 + audioLength) {
-                console.error(`Message length (${data.length}) is less than expected (${8 + audioLength})`);
-                return;
-            }
-
-            if (receivedChannel === this.transmissionManager.getChannel()) {
-                const audioData = data.slice(8, 8 + audioLength);
-                console.log(`Playing audio chunk of length ${audioData.length}`);
-                this.playAudioData(audioData.buffer);
-            }
+            const sampleRate = new Uint32Array(data.buffer, 4, 1)[0];  // Changed from 8 to 4
+            const audioData = data.slice(8);
+            console.log(`Received audio chunk: Channel ${receivedChannel}, Sample Rate ${sampleRate}, Length ${audioData.length}`);
+            this.playAudioData(audioData.buffer);
         } else {
             console.error('Received message with unknown header');
         }
     }
+    private audioContext: AudioContext | null = null;
 
     private async playAudioData(audioData: ArrayBuffer): Promise<void> {
         if (!this.audioContext) {
             this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
         }
 
-        const int16Data = new Int16Array(audioData);
+        try {
+            const audioContext = this.audioContext;
+            const sampleRate = 44100;
+            const numberOfChannels = 1;
 
-        const floatData = new Float32Array(int16Data.length);
-        for (let i = 0; i < int16Data.length; i++) {
-            floatData[i] = int16Data[i] / 32768.0;
+            const audioBuffer = audioContext.createBuffer(numberOfChannels, audioData.byteLength / 2, sampleRate);
+            const channelData = audioBuffer.getChannelData(1);
+            const int16Array = new Int16Array(audioData);
+
+            for (let i = 0; i < int16Array.length; i++) {
+                channelData[i] = int16Array[i] / 32768.0;
+            }
+
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(audioContext.destination);
+            source.start();
+
+            source.onended = () => console.log('Audio playback ended');
+
+        } catch (error) {
+            console.error('Error playing raw PCM audio data:', error);
         }
-
-        const buffer = this.audioContext.createBuffer(1, floatData.length, this.sampleRate);
-        buffer.getChannelData(0).set(floatData);
-
-        const source = this.audioContext.createBufferSource();
-        source.buffer = buffer;
-        source.connect(this.audioContext.destination);
-        source.start();
     }
+
+
+
 
     private sendAudioChunk(audioChunk: ArrayBuffer): void {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            this.socket.send(audioChunk);
+            // Ensure the audioChunk length is a multiple of 4
+            const paddedLength = Math.ceil(audioChunk.byteLength / 4) * 4;
+            const paddedBuffer = new ArrayBuffer(paddedLength);
+            new Uint8Array(paddedBuffer).set(new Uint8Array(audioChunk));
+
+            const float32Data = new Float32Array(paddedBuffer);
+            const int16Data = new Int16Array(float32Data.length);
+
+            for (let i = 0; i < float32Data.length; i++) {
+                const sample = Math.max(-1, Math.min(1, float32Data[i] * 1.2));
+                int16Data[i] = Math.floor(sample * 32767);
+            }
+
+            const header = new Uint8Array([0xAA, 0xAA, 0xAA, 1]);
+            const sampleRateBytes = new Uint8Array(new Uint32Array([this.sampleRate]).buffer);
+            const message = new Uint8Array(header.length + sampleRateBytes.length + int16Data.buffer.byteLength);
+
+            message.set(header);
+            message.set(sampleRateBytes, header.length);
+            message.set(new Uint8Array(int16Data.buffer), header.length + sampleRateBytes.length);
+
+            this.socket.send(message.buffer);
         }
     }
 
@@ -141,6 +166,10 @@ class WebSocketService {
             console.log(`Sending full audio of length: ${fullAudio.byteLength} bytes`);
             this.socket.send(fullAudio);
         }
+    }
+
+    private async handleTransmissionStop(): Promise<void> {
+        await this.fullAudioService.handleTransmissionStop();
     }
 }
 
