@@ -2,10 +2,15 @@ import React from 'react';
 
 interface ConnectButtonProps {
     onClick: () => void;
+    className?: string;
 }
 
-const ConnectButton: React.FC<ConnectButtonProps> = ({ onClick }) => {
-    return <button onClick={onClick}>Connect</button>;
+const ConnectButton: React.FC<ConnectButtonProps> = ({ onClick, className = '' }) => {
+    return (
+        <button onClick={onClick} className={className}>
+            Connect
+        </button>
+    );
 };
 
 export default ConnectButton;

@@ -1,27 +1,27 @@
 import { useState, useEffect } from 'react';
-import WebSocketService from '../services/Utils/WebSocketUtils';
+import { isConnected, startTransmission as startWsTransmission, stopTransmission as stopWsTransmission } from '../services/Utils/WebSocketUtils';
 
 export const useAudioSender = () => {
     const [isTransmitting, setIsTransmitting] = useState(false);
     const [channel, setChannel] = useState(1);
 
     const startTransmission = async () => {
-        if (!WebSocketService.isConnected()) {
+        if (!isConnected()) {
             throw new Error('WebSocket is not connected');
         }
         setIsTransmitting(true);
-        await WebSocketService.startTransmission();
+        await startWsTransmission(channel);
     };
 
     const stopTransmission = () => {
         setIsTransmitting(false);
-        WebSocketService.stopTransmission();
+        stopWsTransmission();
     };
 
     useEffect(() => {
         return () => {
             if (isTransmitting) {
-                WebSocketService.stopTransmission();
+                stopWsTransmission();
             }
         };
     }, [isTransmitting]);
