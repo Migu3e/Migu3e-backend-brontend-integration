@@ -1,13 +1,18 @@
 import React from 'react';
 
 interface AudioButtonProps {
-    onClick: () => void;
+    onMouseDown?: () => void;
+    onMouseUp?: () => void;
     className?: string;
 }
 
-const AudioButton: React.FC<AudioButtonProps> = ({ onClick, className = '' }) => {
+const AudioButton: React.FC<AudioButtonProps> = ({onMouseDown, onMouseUp, className = '' }) => {
     return (
-        <button onClick={onClick} className={className}>
+        <button
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            className={className}
+        >
             Transmit
         </button>
     );

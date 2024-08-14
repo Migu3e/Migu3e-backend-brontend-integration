@@ -1,84 +1,59 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AudioButton from '../../components/buttons/AudioButton.tsx';
-import DisconnectButton from '../../components/buttons/DisconnectButton.tsx';
-import ClientIdDisplay from '../../components/ClientIdDisplay.tsx';
+import AudioButton from '../../components/buttons/AudioButton';
+import DisconnectButton from '../../components/buttons/DisconnectButton';
+import ClientIdDisplay from '../../components/ClientIdDisplay';
 import {
     disconnect,
     getClientId,
     isConnected,
-    startTransmission as startWsTransmission,
-    stopTransmission as stopWsTransmission
-} from '../../controller/WebSocketUtils.tsx';
-import './MainPage.css'
+    startTransmission,
+    stopTransmission
+} from '../../controller/WebSocketController.tsx';
+import './MainPage.css';
 
 const MainPage: React.FC = () => {
     const navigate = useNavigate();
     const [clientId, setClientId] = useState<string | null>(null);
-    const [isTransmitting, setIsTransmitting] = useState(false);
+    const [isTransmitting, setIsTransmitting] = useState(false); // Define the isTransmitting state
     const [channel, setChannel] = useState(1);
 
     useEffect(() => {
         setClientId(getClientId());
     }, []);
 
-    useEffect(() => {
-        return () => {
-            if (isTransmitting) {
-                stopWsTransmission();
-            }
-        };
-    }, [isTransmitting]);
-
-    const handleDisconnect = useCallback(() => {
-        disconnect();
-        navigate('/');
-    }, [navigate]);
-
-    const startTransmission = useCallback(async () => {
-        if (!isConnected()) {
-            console.error('WebSocket is not connected');
-            return;
-        }
-        setIsTransmitting(true);
-        try {
-            await startWsTransmission(channel);
-        } catch (error) {
-            console.error('Failed to start transmission:', error);
-            setIsTransmitting(false);
-        }
-    }, [channel]);
-
-    const stopTransmission = useCallback(() => {
-        setIsTransmitting(false);
-        stopWsTransmission();
-    }, []);
-
-    const handleAudioButtonClick = useCallback(() => {
-        if (isTransmitting) {
-            stopTransmission();
+    const handleMouseDown = () => {
+        if (isConnected()) {
+            startTransmission(channel);
+            setIsTransmitting(true); // Set isTransmitting to true when transmission starts
         } else {
-            startTransmission();
+            console.error('WebSocket is not connected');
         }
-    }, [isTransmitting, startTransmission, stopTransmission]);
+    };
+
+    const handleMouseUp = () => {
+        stopTransmission();
+        setIsTransmitting(false); // Set isTransmitting to false when transmission stops
+    };
 
     return (
         <div className="main">
             <div className="main-page-name">
                 <div className="main-box">
-                    <ClientIdDisplay className="main-page__client-id" clientId={clientId || 'Not connected'}/>
+                    <ClientIdDisplay className="main-page__client-id" clientId={clientId || 'Not connected'} />
                 </div>
             </div>
             <div className="main-page">
                 <div className="main-box">
-                    <img src="../../../public/vite.svg" alt="Logo" className="main-page__logo"/>
+                    <img src="/vite.svg" alt="Logo" className="main-page__logo" />
                     <h1 className="main-page__title">AudioPTTCLIENT</h1>
                     <AudioButton
-                        onClick={handleAudioButtonClick}
+                        onMouseDown={handleMouseDown}
+                        onMouseUp={handleMouseUp}
                         className={`main-page__button ${isTransmitting ? 'main-page__button--transmitting' : ''}`}
                     />
                     <DisconnectButton
-                        onClick={handleDisconnect}
+                        onClick={() => { disconnect(); navigate('/'); }}
                         className="main-page__button main-page__button--disconnect"
                     />
                     <div className="main-page__channel-select">

@@ -3,7 +3,6 @@ let mediaRecorder: MediaRecorder | null = null;
 let audioChunks: Blob[] = [];
 let onDataAvailable: (data: ArrayBuffer, channel: number) => void;
 let onStop: () => void;
-const sampleRate = 44100;
 
 export const initAudioService = (
     dataCallback: (data: ArrayBuffer, channel: number) => void,
@@ -77,4 +76,3 @@ export const clearAudioChunks = (): void => {
     audioChunks = [];
 };
 
-export const getSampleRate = (): number => sampleRate;

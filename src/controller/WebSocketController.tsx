@@ -24,7 +24,7 @@ export async function connect(): Promise<void> {
         };
         socket.onmessage = (event) => {
             if (typeof event.data === 'string') {
-                // Assuming the first text message is the client ID
+                //the first and only text message is the client ID
                 clientId = event.data;
                 console.log('Received client ID:', clientId);
                 resolve();

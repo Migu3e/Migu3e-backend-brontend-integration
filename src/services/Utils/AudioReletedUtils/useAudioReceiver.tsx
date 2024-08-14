@@ -24,14 +24,16 @@ function handleBinaryMessage(buffer: ArrayBuffer): void {
         const audioData = data.slice(8);
         console.log(`Received audio chunk: Channel ${receivedChannel}, Sample Rate ${sampleRate}, Length ${audioData.length}`);
         playAudioData(audioData.buffer);
-    } else {
+    }
+    else
+    {
         console.error('Received message with unknown header');
     }
 }
 
 async function playAudioData(audioData: ArrayBuffer): Promise<void> {
     if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext);
     }
 
     try {
