@@ -1,7 +1,7 @@
 import { handleIncomingMessage, cleanupAudioContext } from '../../controller/useAudioReceiver';
 import * as AudioService from './AudioReletedUtils/AudioServiceUtils.tsx';
 import * as FullAudioService from './AudioReletedUtils/FullAudioMakerUtils.tsx';
-import { sendAudioChunk, sendFullAudio, setSocket } from './AudioReletedUtils/AudioPorcessingUtils.tsx';
+import { sendAudioChunk, sendFullAudio, setSocket } from '../../controller/AudioSender.tsx';
 
 let socket: WebSocket | null = null;
 let clientId: string | null = null;
@@ -62,7 +62,6 @@ export function stopTransmission(): void {
     AudioService.clearAudioChunks();
 }
 
-// Initialize services
 initializeServices();
 
 export { sendAudioChunk, sendFullAudio };

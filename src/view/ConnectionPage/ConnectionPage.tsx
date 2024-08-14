@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import ConnectButton from '../../components/buttons/ConnectButton.tsx';
 import { connect } from '../../services/Utils/WebSocketUtils.tsx';
-import './ConnectionPage.css'; // Import the CSS file
+import './ConnectionPage.css';
 
 const ConnectionPage: React.FC = () => {
     const navigate = useNavigate();
