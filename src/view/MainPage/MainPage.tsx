@@ -9,7 +9,7 @@ import {
     isConnected,
     startTransmission as startWsTransmission,
     stopTransmission as stopWsTransmission
-} from '../../services/Utils/WebSocketUtils.tsx';
+} from '../../controller/WebSocketUtils.tsx';
 import './MainPage.css'
 
 const MainPage: React.FC = () => {

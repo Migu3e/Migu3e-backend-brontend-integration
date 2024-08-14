@@ -1,7 +1,7 @@
-import { handleIncomingMessage, cleanupAudioContext } from '../../controller/useAudioReceiver';
-import * as AudioService from './AudioReletedUtils/AudioServiceUtils.tsx';
-import * as FullAudioService from './AudioReletedUtils/FullAudioMakerUtils.tsx';
-import { sendAudioChunk, sendFullAudio, setSocket } from '../../controller/AudioSender.tsx';
+import { handleIncomingMessage, cleanupAudioContext } from '../services/Utils/AudioReletedUtils/useAudioReceiver.tsx';
+import * as AudioService from '../services/Utils/AudioReletedUtils/AudioServiceUtils.tsx';
+import * as FullAudioService from '../services/Utils/AudioReletedUtils/FullAudioMakerUtils.tsx';
+import { sendAudioChunk, sendFullAudio, setSocket } from '../services/Utils/AudioReletedUtils/AudioSender.tsx';
 
 let socket: WebSocket | null = null;
 let clientId: string | null = null;
