@@ -1,0 +1,54 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+}
+
+.connection-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.connection-box {
+    background-color: #282828;
+    border-radius: 8px;
+    padding: 40px;
+    width: 450px;
+    box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.connection-page__logo {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px;
+}
+
+.connection-page__title {
+    color: #ffffff;
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.connection-page__button {
+    background-color: #1DB954;
+    color: white;
+    border: solid 1px #1DB954;
+    border-radius: 500px;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.connection-page__button:hover {
+    background-color: #282828;
+    color: #1DB954;
+    border: solid 1px #1DB954;
+}
