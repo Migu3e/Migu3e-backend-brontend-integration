@@ -1,7 +1,7 @@
 import { handleIncomingMessage, cleanupAudioContext } from '../services/Utils/AudioReletedUtils/useAudioReceiver.tsx';
 import * as AudioService from '../services/Utils/AudioReletedUtils/AudioServiceUtils.tsx';
 import * as FullAudioService from '../services/Utils/AudioReletedUtils/FullAudioMakerUtils.tsx';
-import { sendAudioChunk, sendFullAudio, setSocket } from '../services/Utils/AudioReletedUtils/AudioSender.tsx';
+import { sendAudioChunk, sendFullAudio, setSocket } from '../services/Utils/AudioReletedUtils/AudioSenderUtils.tsx';
 
 let socket: WebSocket | null = null;
 let clientId: string | null = null;
@@ -11,7 +11,7 @@ async function handleTransmissionStop(): Promise<void> {
 }
 
 function initializeServices(): void {
-    AudioService.initAudioService(sendAudioChunk, handleTransmissionStop);
+    AudioService.startAudioService(sendAudioChunk, handleTransmissionStop);
     FullAudioService.initializeFullAudioService(sendFullAudio);
 }
 

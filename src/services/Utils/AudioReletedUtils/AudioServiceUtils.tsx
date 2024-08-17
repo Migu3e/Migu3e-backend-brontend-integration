@@ -4,7 +4,7 @@ let audioChunks: Blob[] = [];
 let onDataAvailable: (data: ArrayBuffer, channel: number) => void;
 let onStop: () => void;
 
-export const initAudioService = (
+export const startAudioService = (
     dataCallback: (data: ArrayBuffer, channel: number) => void,
     stopCallback: () => void
 ): void => {
