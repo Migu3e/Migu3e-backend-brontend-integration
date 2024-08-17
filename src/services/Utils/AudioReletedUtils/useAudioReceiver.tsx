@@ -32,7 +32,7 @@ function handleBinaryMessage(buffer: ArrayBuffer): void {
 
 async function playAudioData(audioData: ArrayBuffer): Promise<void> {
     if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext);
     }
 
     try {
