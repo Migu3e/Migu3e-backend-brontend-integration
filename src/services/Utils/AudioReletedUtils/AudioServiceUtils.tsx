@@ -12,6 +12,7 @@ export const startAudioService = (
     onStop = stopCallback;
 };
 
+
 export const start = async (channel: number): Promise<void> => {
     try {
         const stream: MediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });

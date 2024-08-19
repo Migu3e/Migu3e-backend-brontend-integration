@@ -5,8 +5,8 @@ interface ClientIdDisplayProps {
     className?: string;
 }
 
-const ClientIdDisplay: React.FC<ClientIdDisplayProps> = ({ clientId, className = '' }) => {
-    return <div className={className}>Client ID: {clientId}</div>;
+const ClientIdDisplay: React.FC<ClientIdDisplayProps> = (props:ClientIdDisplayProps) => {
+    return <div className={props.className}>Client ID: {props.clientId}</div>;
 };
 
 export default ClientIdDisplay;

@@ -47,13 +47,10 @@ const MainPage: React.FC = () => {
                 <div className="main-box">
                     <img src="/vite.svg" alt="Logo" className="main-page__logo" />
                     <h1 className="main-page__title">AudioPTTCLIENT</h1>
-                    <AudioButton
-                        onMouseDown={handleMouseDown}
-                        onMouseUp={handleMouseUp}
+                    <AudioButton onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}
                         className={`main-page__button ${isTransmitting ? 'main-page__button--transmitting' : ''}`}
                     />
-                    <DisconnectButton
-                        onClick={() => { disconnect(); navigate('/'); }}
+                    <DisconnectButton onClick={() => { disconnect(); navigate('/'); }}
                         className="main-page__button main-page__button--disconnect"
                     />
                     <div className="main-page__channel-select">
