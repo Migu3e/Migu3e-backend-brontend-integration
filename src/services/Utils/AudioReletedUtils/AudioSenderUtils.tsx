@@ -1,7 +1,7 @@
 const sampleRate: number = 44100;
 let socket: WebSocket | null = null;
 
-export function sendAudioChunk(audioChunk: ArrayBuffer, channel: number): void {
+export function sendAudioChunk(audioChunk: ArrayBuffer): void {
     if (socket && socket.readyState === WebSocket.OPEN) {
         const paddedLength: number = Math.ceil(audioChunk.byteLength / 4) * 4;
         const paddedBuffer: ArrayBuffer = new ArrayBuffer(paddedLength);
@@ -14,7 +14,7 @@ export function sendAudioChunk(audioChunk: ArrayBuffer, channel: number): void {
             int16Data[i] = Math.floor(sample * 32767);
         }
 
-        const header: Uint8Array = new Uint8Array([0xAA, 0xAA, 0xAA, channel]);
+        const header: Uint8Array = new Uint8Array([0xAA, 0xAA, 0xAA,0xAA]);
         const sampleRateBytes: Uint8Array = new Uint8Array(new Uint32Array([sampleRate]).buffer);
         const message: Uint8Array = new Uint8Array(header.length + sampleRateBytes.length + int16Data.buffer.byteLength);
 
