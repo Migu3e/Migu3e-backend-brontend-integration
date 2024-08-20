@@ -13,6 +13,7 @@ interface WebSocketContextType {
     startTransmission: (channel: number) => Promise<void>;
     stopTransmission: () => void;
     sendChannelFrequency: (channel : number) => void;
+    sendVolumeLevel: (channel : number) => void;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -69,9 +70,9 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
         }
     };
 
-    const startTransmission = async (channel: number): Promise<void> => {
+    const startTransmission = async (): Promise<void> => {
         if (!socket) throw new Error('WebSocket is not connected');
-        await AudioService.start(channel);
+        await AudioService.start();
     };
 
     const stopTransmission = (): void => {
@@ -85,6 +86,15 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
             socket.send(message);
         } else {
             console.warn('Failed to send channel frequency: Socket not connected or ready');
+        }
+    };
+    const sendVolumeLevel = (volume: number): void => {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            const message : string = `VUL|${volume}`; // Combine ID string with volume
+            console.log(`Sending volume level: ${message}`);
+            socket.send(message);
+        } else {
+            console.warn('Failed to send volume level: Socket not connected or ready');
         }
     };
     useEffect(() => {
@@ -103,6 +113,7 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
                 startTransmission,
                 stopTransmission,
                 sendChannelFrequency,
+                sendVolumeLevel,
             }}
         >
             {children}

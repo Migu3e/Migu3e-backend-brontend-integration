@@ -2,22 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer components {
-
     .rotating-knob-container {
-        @apply flex flex-col items-center mt-5;
+        @apply flex flex-col items-center;
     }
 
     .rotating-knob {
-        @apply w-[100px] h-[100px] rounded-full bg-[#454545] border-2 border-[#afafaf] relative cursor-pointer;
+        @apply w-[60px] h-[60px] rounded-full bg-[#454545] border-2 border-[#afafaf] relative cursor-pointer;
     }
 
     .knob-indicator {
-        @apply absolute top-[-3px] left-1/2 w-[2px] h-[20px] bg-white -translate-x-1/2 border-r-[5px] border-transparent;
+        @apply absolute top-[-3px] left-1/2 w-[2px] h-[15px] bg-white -translate-x-1/2 border-r-[5px] border-transparent;
     }
 
     .channel-display {
-        @apply mt-2.5 text-lg text-white;
+        @apply mt-1 text-sm text-white flex flex-col items-center;
+    }
+
+    .channel-label {
+        @apply text-xs text-gray-400;
+    }
+
+    .channel-number {
+        @apply text-base font-bold;
+        min-width: 2ch;
+        text-align: center;
     }
 }

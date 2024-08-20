@@ -8,7 +8,8 @@ export const useWebSocketController = () => {
         clientId,
         startTransmission,
         stopTransmission,
-        sendChannelFrequency
+        sendChannelFrequency,
+        sendVolumeLevel
     } = useWebSocket();
 
     return {
@@ -18,6 +19,7 @@ export const useWebSocketController = () => {
         getClientId: () => clientId,
         startTransmission,
         stopTransmission,
-        sendChannelFrequency
+        sendChannelFrequency,
+        sendVolumeLevel
     };
 };
