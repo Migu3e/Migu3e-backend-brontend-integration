@@ -1,11 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import ConnectButton from '../../components/buttons/ConnectButton.tsx';
-import { connect } from '../../controller/WebSocketController.tsx';
+import ConnectButton from '../../components/buttons/ConnectButton';
+import { useWebSocketController } from '../../controller/WebSocketController.tsx';
 import './ConnectionPage.css';
 
 const ConnectionPage: React.FC = () => {
     const navigate = useNavigate();
+    const { connect } = useWebSocketController();
 
     const handleConnect = async () => {
         try {

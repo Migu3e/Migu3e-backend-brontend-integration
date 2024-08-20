@@ -3,13 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AudioButton from '../../components/buttons/AudioButton';
 import DisconnectButton from '../../components/buttons/DisconnectButton';
 import ClientIdDisplay from '../../components/ClientIdDisplay';
-import {
-    disconnect,
-    getClientId,
-    isConnected,
-    startTransmission,
-    stopTransmission
-} from '../../controller/WebSocketController.tsx';
+import { useWebSocketController } from '../../controller/WebSocketController.tsx';
 import './MainPage.css';
 
 const MainPage: React.FC = () => {
@@ -17,13 +11,14 @@ const MainPage: React.FC = () => {
     const [clientId, setClientId] = useState<string | null>(null);
     const [isTransmitting, setIsTransmitting] = useState(false); // Define the isTransmitting state
     const [channel, setChannel] = useState(1);
+    const { getClientId, isConnected, startTransmission, stopTransmission, disconnect } = useWebSocketController();
 
     useEffect(() => {
         setClientId(getClientId());
     }, []);
 
     const handleMouseDown = () => {
-        if (isConnected()) {
+        if (isConnected) {
             startTransmission(channel);
             setIsTransmitting(true); // Set isTransmitting to true when transmission starts
         } else {
