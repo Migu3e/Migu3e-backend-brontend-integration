@@ -4,7 +4,7 @@
 
 @layer base {
     body, html {
-        @apply m-0 p-0 h-full font-sans bg-[#121212] overflow-hidden;
+        @apply m-0 p-0 h-full font-sans bg-[#121212];
     }
 }
 
@@ -14,7 +14,7 @@
     }
 
     .main {
-        @apply mt-[60px];
+        @apply mt-[40px];
     }
 
     .main-page-name {

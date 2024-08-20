@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer components {
+
+    .rotating-knob-container {
+        @apply flex flex-col items-center mt-5;
+    }
+
+    .rotating-knob {
+        @apply w-[100px] h-[100px] rounded-full bg-[#454545] border-2 border-[#afafaf] relative cursor-pointer;
+    }
+
+    .knob-indicator {
+        @apply absolute top-[-3px] left-1/2 w-[2px] h-[20px] bg-white -translate-x-1/2 border-r-[5px] border-transparent;
+    }
+
+    .channel-display {
+        @apply mt-2.5 text-lg text-white;
+    }
+}

@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import AudioButton from '../../components/buttons/AudioButton';
 import DisconnectButton from '../../components/buttons/DisconnectButton';
 import ClientIdDisplay from '../../components/ClientIdDisplay';
-import ChannelKnob from '../../components/ChannelSelect.tsx';
+import RotatingKnob from '../../components/ChannelSelect.tsx';
+
 
 import { useWebSocketController } from '../../controller/WebSocketController.tsx';
 import './MainPage.css';
@@ -12,7 +13,7 @@ const MainPage: React.FC = () => {
     const navigate = useNavigate();
     const [clientId, setClientId] = useState<string | null>(null);
     const [isTransmitting, setIsTransmitting] = useState(false); // Define the isTransmitting state
-    const [channel, setChannel] = useState(29.9875);
+    const [channel, setChannel] = useState(1);
     const { getClientId, isConnected, startTransmission, stopTransmission, disconnect,sendChannelFrequency } = useWebSocketController();
 
     useEffect(() => {
@@ -50,7 +51,7 @@ const MainPage: React.FC = () => {
                     <DisconnectButton onClick={() => { disconnect(); navigate('/'); }}
                         className="main-page__button main-page__button--disconnect"
                     />
-                    <ChannelKnob channel={channel} setChannel={setChannel}  sendChannelFrequency={sendChannelFrequency} />
+                    <RotatingKnob channel={channel} setChannel={setChannel}  sendChannelFrequency={sendChannelFrequency} />
                 </div>
             </div>
         </div>

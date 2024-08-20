@@ -80,7 +80,7 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
     };
     const sendChannelFrequency = (channel: number): void => {
         if (socket && socket.readyState === WebSocket.OPEN) {
-            const message : string = `FRE|${channel.toFixed(3)}`; // Combine ID string with formatted frequency
+            const message : string = `FRE|${channel.toFixed(4)}`; // Combine ID string with formatted frequency
             console.log(`Sending channel frequency: ${message}`);
             socket.send(message);
         } else {
