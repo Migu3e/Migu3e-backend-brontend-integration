@@ -20,7 +20,9 @@ const ConnectionPage: React.FC = () => {
     return (
         <div className="connection-page">
             <div className="connection-box">
-                <img src="../../../public/vite.svg" alt="Logo" className="connection-page__logo" />
+                <div className=".connection-page__logo_continer">
+                    <img src="../../../public/vite.svg" alt="Logo" className="connection-page__logo"/>
+                </div>
                 <h1 className="connection-page__title">AudioPTTCLIENT</h1>
                 <ConnectButton onClick={handleConnect} className="connection-page__button" />
             </div>
