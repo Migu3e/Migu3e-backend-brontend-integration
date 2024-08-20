@@ -7,7 +7,8 @@ export const useWebSocketController = () => {
         isConnected,
         clientId,
         startTransmission,
-        stopTransmission
+        stopTransmission,
+        sendChannelFrequency
     } = useWebSocket();
 
     return {
@@ -16,6 +17,7 @@ export const useWebSocketController = () => {
         isConnected,
         getClientId: () => clientId,
         startTransmission,
-        stopTransmission
+        stopTransmission,
+        sendChannelFrequency
     };
 };
