@@ -5,9 +5,9 @@ interface DisconnectButtonProps {
     className?: string;
 }
 
-const DisconnectButton: React.FC<DisconnectButtonProps> = ({ onClick, className = '' }) => {
+const DisconnectButton: React.FC<DisconnectButtonProps> = (props:DisconnectButtonProps) => {
     return (
-        <button onClick={onClick} className={className}>
+        <button onClick={props.onClick} className={props.className}>
             Disconnect
         </button>
     );

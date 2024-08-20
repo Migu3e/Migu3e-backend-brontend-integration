@@ -5,9 +5,9 @@ interface ConnectButtonProps {
     className?: string;
 }
 
-const ConnectButton: React.FC<ConnectButtonProps> = ({ onClick, className = '' }) => {
+const ConnectButton: React.FC<ConnectButtonProps> = (props:ConnectButtonProps) => {
     return (
-        <button onClick={onClick} className={className}>
+        <button onClick={props.onClick} className={props.className}>
             Connect
         </button>
     );

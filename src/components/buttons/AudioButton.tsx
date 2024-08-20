@@ -6,12 +6,12 @@ interface AudioButtonProps {
     className?: string;
 }
 
-const AudioButton: React.FC<AudioButtonProps> = ({onMouseDown, onMouseUp, className = '' }) => {
+const AudioButton: React.FC<AudioButtonProps> = (props:AudioButtonProps) => {
     return (
         <button
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
-            className={className}
+            onMouseDown={props.onMouseDown}
+            onMouseUp={props.onMouseUp}
+            className={props.className}
         >
             Transmit
         </button>

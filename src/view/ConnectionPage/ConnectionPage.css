@@ -1,54 +1,35 @@
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background-color: #121212;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body, html {
+        @apply m-0 p-0 h-full font-sans bg-[#121212];
+    }
 }
 
-.connection-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+@layer components {
+    .connection-page {
+        @apply flex justify-center items-center h-screen;
+    }
 
-.connection-box {
-    background-color: #282828;
-    border-radius: 8px;
-    padding: 40px;
-    width: 450px;
-    box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
-    text-align: center;
-}
+    .connection-box {
+        @apply bg-[#282828] rounded-lg p-10 w-[450px] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center;
+    }
 
-.connection-page__logo {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 20px;
-}
+    .connection-page__logo {
+        @apply w-[50px] h-[50px] mb-5;
+    }
 
-.connection-page__title {
-    color: #ffffff;
-    font-size: 32px;
-    margin-bottom: 30px;
-}
+    .connection-page__title {
+        @apply text-white text-4xl mb-8;
+    }
 
-.connection-page__button {
-    background-color: #1DB954;
-    color: white;
-    border: solid 1px #1DB954;
-    border-radius: 500px;
-    padding: 14px 32px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    transition: background-color 0.3s ease;
-}
+    .connection-page__button {
+        @apply bg-[#1DB954] text-white border border-[#1DB954] rounded-full py-3.5 px-8 text-base font-bold w-full transition-colors duration-300;
+    }
 
-.connection-page__button:hover {
-    background-color: #282828;
-    color: #1DB954;
-    border: solid 1px #1DB954;
+    .connection-page__button:hover {
+        @apply bg-[#282828] text-[#1DB954];
+    }
 }
