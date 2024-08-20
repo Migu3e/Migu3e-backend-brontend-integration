@@ -12,6 +12,7 @@ interface WebSocketContextType {
     disconnect: () => void;
     startTransmission: (channel: number) => Promise<void>;
     stopTransmission: () => void;
+    sendChannelFrequency: (channel : number) => void;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -77,7 +78,15 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
         AudioService.stop();
         AudioService.clearAudioChunks();
     };
-
+    const sendChannelFrequency = (channel: number): void => {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            const message : string = `FRE|${channel.toFixed(4)}`; // Combine ID string with formatted frequency
+            console.log(`Sending channel frequency: ${message}`);
+            socket.send(message);
+        } else {
+            console.warn('Failed to send channel frequency: Socket not connected or ready');
+        }
+    };
     useEffect(() => {
         AudioService.startAudioService(sendAudioChunk, FullAudioService.handleTransmissionStop);
         FullAudioService.initializeFullAudioService(sendFullAudio);
@@ -93,6 +102,7 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
                 disconnect,
                 startTransmission,
                 stopTransmission,
+                sendChannelFrequency,
             }}
         >
             {children}
@@ -102,8 +112,10 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
 
 export const useWebSocket = (): WebSocketContextType => {
     const context = useContext(WebSocketContext);
-    if (!context) {
+    if (!context)
+    {
         throw new Error('useWebSocket must be used within a WebSocketProvider');
     }
     return context;
+
 };

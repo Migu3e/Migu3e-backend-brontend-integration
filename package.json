@@ -10,12 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.0",
     "@microsoft/signalr": "^8.0.7",
     "@types/axios": "^0.14.0",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.7.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-knob": "^0.1.0",
     "react-router-dom": "^6.26.0",
     "rxjs": "^7.8.1",
     "standardized-audio-context": "^25.3.76",

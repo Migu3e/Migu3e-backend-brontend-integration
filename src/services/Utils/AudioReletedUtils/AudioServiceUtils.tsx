@@ -1,11 +1,11 @@
 let audioContext: AudioContext | null = null;
 let mediaRecorder: MediaRecorder | null = null;
 let audioChunks: Blob[] = [];
-let onDataAvailable: (data: ArrayBuffer, channel: number) => void;
+let onDataAvailable: (data: ArrayBuffer) => void;
 let onStop: () => void;
 
 export const startAudioService = (
-    dataCallback: (data: ArrayBuffer, channel: number) => void,
+    dataCallback: (data: ArrayBuffer) => void,
     stopCallback: () => void
 ): void => {
     onDataAvailable = dataCallback;
@@ -13,7 +13,7 @@ export const startAudioService = (
 };
 
 
-export const start = async (channel: number): Promise<void> => {
+export const start = async (): Promise<void> => {
     try {
         const stream: MediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         audioContext = new (window.AudioContext);
@@ -30,7 +30,7 @@ export const start = async (channel: number): Promise<void> => {
             const fullAudioBlob: Blob = new Blob(audioChunks, { type: 'audio/webm' });
             const arrayBuffer: ArrayBuffer = await fullAudioBlob.arrayBuffer();
             onStop();
-            onDataAvailable(arrayBuffer, channel);
+            onDataAvailable(arrayBuffer);
         };
 
         const source: MediaStreamAudioSourceNode = audioContext.createMediaStreamSource(stream);
@@ -42,7 +42,7 @@ export const start = async (channel: number): Promise<void> => {
         processor.onaudioprocess = (e: AudioProcessingEvent) => {
             const inputData: Float32Array = e.inputBuffer.getChannelData(0);
             const audioData: Float32Array = new Float32Array(inputData);
-            onDataAvailable(audioData.buffer, channel);
+            onDataAvailable(audioData.buffer);
         };
 
         mediaRecorder.start(10); // recording the full audio data every 10ms
