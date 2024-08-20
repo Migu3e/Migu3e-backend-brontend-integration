@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CHANNEL_FREQUENCIES } from '../models/ChannelFrequencies';
+import { CHANNEL_FREQUENCIES } from '../../../models/ChannelFrequencies.tsx';
 import './Knob.css';
 
 interface RotatingKnobProps {

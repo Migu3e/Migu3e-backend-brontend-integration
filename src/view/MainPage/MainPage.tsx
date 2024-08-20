@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AudioButton from '../../components/buttons/AudioButton';
 import DisconnectButton from '../../components/buttons/DisconnectButton';
 import ClientIdDisplay from '../../components/ClientIdDisplay';
-import RotatingKnob from '../../components/ChannelSelect.tsx';
+import ChannelKnob from '../../components/buttons/Knob/ChannelKnob.tsx';
 
 
 import { useWebSocketController } from '../../controller/WebSocketController.tsx';
@@ -51,7 +51,7 @@ const MainPage: React.FC = () => {
                     <DisconnectButton onClick={() => { disconnect(); navigate('/'); }}
                         className="main-page__button main-page__button--disconnect"
                     />
-                    <RotatingKnob channel={channel} setChannel={setChannel}  sendChannelFrequency={sendChannelFrequency} />
+                    <ChannelKnob channel={channel} setChannel={setChannel}  sendChannelFrequency={sendChannelFrequency} />
                 </div>
             </div>
         </div>
