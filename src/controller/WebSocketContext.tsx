@@ -8,12 +8,12 @@ interface WebSocketContextType {
     socket: WebSocket | null;
     clientId: string | null;
     isConnected: boolean;
-    connect: () => Promise<void>;
+    connect: (serverAddress: string) => Promise<void>;
     disconnect: () => void;
     startTransmission: (channel: number) => Promise<void>;
     stopTransmission: () => void;
-    sendChannelFrequency: (channel : number) => void;
-    sendVolumeLevel: (channel : number) => void;
+    sendChannelFrequency: (channel: number) => void;
+    sendVolumeLevel: (volume: number) => void;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -30,9 +30,9 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
         };
     }, []);
 
-    const connect = async (): Promise<void> => {
+    const connect = async (serverAddress: string): Promise<void> => {
         return new Promise((resolve, reject) => {
-            const newSocket = new WebSocket('ws://localhost:8081');
+            const newSocket = new WebSocket(`ws://${serverAddress}:8081`);
             newSocket.onopen = () => {
                 console.log('Connected to server');
                 setWebSocket(newSocket);
