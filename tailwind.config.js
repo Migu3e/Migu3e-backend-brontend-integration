@@ -18,7 +18,13 @@ export default {
 
       'xl': '1280px',
       // => @media (min-width: 1280px) { ... }
-    }
+    },
+    fontSize: {
+      'base': '1rem', // 16px
+
+      'xs': '0.75rem', // 12px
+      'sm': '0.875rem', // 14px
+    },
   },
   plugins: [],
 }

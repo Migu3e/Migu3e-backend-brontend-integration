@@ -4,19 +4,16 @@ const StatusDisplay = styled.div`
     font-family: 'Courier New', monospace;
     color: #002942;
     background-color: #55521f;
-    padding: 10px;
-    border-radius: 5px;
-    width: 310px;
-    height: 190px;
-
-
+    padding: 0.625rem; 
+    border-radius: 0.3125rem; 
+    width: 19.375rem; 
+    height: 11.875rem;
 `;
 
 const StatusRow = styled.div`
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
-
+    margin-bottom: 0.625rem; 
 `;
 
 const StatusRowOther = styled(StatusRow)`
@@ -43,33 +40,31 @@ const ClientIdItem = styled(StatusItem)`
 `;
 
 const StatusLabel = styled.div`
-    font-size: 16px;
-    margin-bottom: 2px;
+    font-size: 1rem; 
+    margin-bottom: 0.125rem; 
 `;
 const StatusFreqLabel = styled(StatusLabel)`
-    font-size: 17px;
-    margin-bottom: 3px;
+    font-size: 1.0625rem; 
+    margin-bottom: 0.1875rem; 
     font-weight: bold;
 `;
 
-
 const StatusValue = styled.div`
-    font-size: 16px;
+    font-size: 1rem; 
 `;
 const StatusFreqValue = styled(StatusValue)`
-    font-size: 17px;
+    font-size: 1.0625rem; 
     font-weight: bolder;
 `;
 
 const DisplayOn = styled(StatusDisplay)`
     opacity: 1;
-    margin-bottom: 63px;
+    margin-bottom: 3.9375rem; 
 `;
 
 const DisplayOff = styled(StatusDisplay)`
     background-color: #3e3c1d;
-    margin-bottom: 63px;
-
+    margin-bottom: 3.9375rem; 
 `;
 
 export {
