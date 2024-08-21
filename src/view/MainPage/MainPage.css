@@ -22,7 +22,7 @@
     }
 
     .main-box {
-        @apply bg-[#282828] rounded-lg p-10 w-[450px] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center;
+        @apply bg-[#282828] rounded-lg p-10 w-[450px] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center relative;
     }
 
     .main-page__logo {
@@ -38,7 +38,7 @@
     }
 
     .main-page__button {
-        @apply bg-[#1DB954] text-white border-none rounded-[500px] py-[14px] px-[32px] text-base font-bold cursor-pointer w-full mb-[15px] transition-colors duration-300;
+        @apply bg-[#1DB954] mt-4 text-white border-none rounded-[500px] py-[14px] px-[32px] text-base font-bold cursor-pointer w-full mb-[15px] transition-colors duration-300;
     }
 
     .main-page__button:hover {
@@ -61,15 +61,5 @@
         @apply bg-[#6a0000] text-black;
     }
 
-    .main-page__channel-select {
-        @apply mt-5 text-left;
-    }
 
-    .main-page__select {
-        @apply w-full py-[10px] px-[10px] text-base rounded bg-[#3E3E3E] text-white border-none mt-[5px];
-    }
-
-    .main-page__select-label {
-        @apply text-[#b3b3b3] text-sm;
-    }
 }

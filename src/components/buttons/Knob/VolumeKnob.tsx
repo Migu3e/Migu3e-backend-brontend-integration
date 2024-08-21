@@ -1,21 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CHANNEL_FREQUENCIES } from '../../../models/ChannelFrequencies.tsx';
 import './Knob.css';
 
-interface RotatingKnobProps {
-    channel: number;
-    setChannel: (channel: number) => void;
-    sendChannelFrequency: (frequency: number) => void;
+interface VolumeKnobProps {
+    volume: number;
+    setVolume: (volume: number) => void;
+    sendVolumeLevel: (volume: number) => void;
 }
 
-const RotatingKnob: React.FC<RotatingKnobProps> = ({ channel, setChannel, sendChannelFrequency }) => {
+const VolumeKnob: React.FC<VolumeKnobProps> = ({ volume, setVolume, sendVolumeLevel }) => {
     const [rotation, setRotation] = useState(0);
     const knobRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const newRotation = (channel - 1) * (360 / CHANNEL_FREQUENCIES.length);
+        const newRotation = volume * (270 / 100) - 135;
         setRotation(newRotation);
-    }, [channel]);
+    }, [volume]);
 
     const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -28,17 +27,12 @@ const RotatingKnob: React.FC<RotatingKnobProps> = ({ channel, setChannel, sendCh
 
         const handleMouseMove = (moveEvent: MouseEvent) => {
             const angle = Math.atan2(moveEvent.clientY - knobCenterY, moveEvent.clientX - knobCenterX);
-            let newRotation = angle * (180 / Math.PI) + 90;
-            if (newRotation < 0) newRotation += 360;
+            let newRotation = angle * (180 / Math.PI) + 135;
+            newRotation = Math.max(0, Math.min(newRotation, 270));
 
-            const channelIndex = Math.round((newRotation / 360) * CHANNEL_FREQUENCIES.length);
-            const newChannel = (channelIndex % CHANNEL_FREQUENCIES.length) + 1;
-
-            setChannel(newChannel);
-            const selectedFrequency = CHANNEL_FREQUENCIES.find((ch) => ch.channel === newChannel)?.frequency;
-            if (selectedFrequency) {
-                sendChannelFrequency(selectedFrequency);
-            }
+            const newVolume = Math.round((newRotation / 270) * 10) * 10;
+            setVolume(newVolume);
+            sendVolumeLevel(newVolume);
         };
 
         const handleMouseUp = () => {
@@ -61,10 +55,10 @@ const RotatingKnob: React.FC<RotatingKnobProps> = ({ channel, setChannel, sendCh
                 <div className="knob-indicator"/>
             </div>
             <div className="channel-display">
-                <span className="channel-label">Channel</span>
+                <span className="channel-label">Volume</span>
             </div>
         </div>
     );
 };
 
-export default RotatingKnob;
+export default VolumeKnob;
