@@ -14,6 +14,7 @@ interface WebSocketContextType {
     stopTransmission: () => void;
     sendChannelFrequency: (channel: number) => void;
     sendVolumeLevel: (volume: number) => void;
+    sendOnOffState: (state: string) => void;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -97,6 +98,15 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
             console.warn('Failed to send volume level: Socket not connected or ready');
         }
     };
+    const sendOnOffState = (state: string): void => {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            const message: string = `ONF|${state}`;
+            console.log(`Sending on/off state: ${message}`);
+            socket.send(message);
+        } else {
+            console.warn('Failed to send on/off state: Socket not connected or ready');
+        }
+    };
     useEffect(() => {
         AudioService.startAudioService(sendAudioChunk, FullAudioService.handleTransmissionStop);
         FullAudioService.initializeFullAudioService(sendFullAudio);
@@ -114,6 +124,7 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
                 stopTransmission,
                 sendChannelFrequency,
                 sendVolumeLevel,
+                sendOnOffState,
             }}
         >
             {children}

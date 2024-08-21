@@ -9,7 +9,8 @@ export const useWebSocketController = () => {
         startTransmission,
         stopTransmission,
         sendChannelFrequency,
-        sendVolumeLevel
+        sendVolumeLevel,
+        sendOnOffState
     } = useWebSocket();
 
     return {
@@ -20,6 +21,7 @@ export const useWebSocketController = () => {
         startTransmission,
         stopTransmission,
         sendChannelFrequency,
-        sendVolumeLevel
+        sendVolumeLevel,
+        sendOnOffState
     };
 };
