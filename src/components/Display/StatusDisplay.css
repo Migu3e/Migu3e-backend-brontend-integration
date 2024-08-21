@@ -1,0 +1,55 @@
+.status-display {
+    @apply font-mono text-[#002942] bg-[#55521f] p-2.5 rounded-md w-[310px] h-[170px];
+}
+
+.status-row {
+    @apply flex justify-between mb-2.5;
+}
+
+.status-row-other {
+    @apply flex justify-center items-center mb-2.5;
+}
+
+.top-row {
+    @apply items-center;
+}
+
+.status-item {
+    @apply flex flex-col w-full;
+}
+
+.volume-item {
+    @apply items-start;
+}
+
+.client-id-item {
+    @apply items-end;
+}
+
+.status-label {
+    @apply text-xs mb-0.5;
+}
+
+.status-value {
+    @apply text-xs font-bold;
+}
+
+.status-row:last-child .status-item {
+    @apply items-center;
+}
+
+.status-row:last-child .status-label {
+    @apply text-xs;
+}
+
+.status-row:last-child .status-value {
+    @apply text-base;
+}
+
+.display-on {
+    @apply opacity-100;
+}
+
+.display-off {
+    @apply font-mono text-[#002942] bg-[#3e3c1d] p-2.5 rounded-md w-[310px] h-[170px];
+}

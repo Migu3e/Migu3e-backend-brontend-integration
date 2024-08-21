@@ -1,43 +1,32 @@
 import React from 'react';
-import './ControlPanel.css';
+import './ButtonGrid.css';
+import Button1Lite from "./Buttons/1_LITE.tsx";
+import Button2Freq from "./Buttons/2_FREQ.tsx";
+import Button3Test from "./Buttons/3_TEST.tsx";
+import Button4FncRst from "./Buttons/4_FNC_RST.tsx";
+import Button5Clr from "./Buttons/5_CLR.tsx";
+import Button6Sec from "./Buttons/6_SEC.tsx";
+import Button7Aj from "./Buttons/7_AJ.tsx";
+import Button8Ent from "./Buttons/8_ENT.tsx";
 
-interface ButtonProps {
-    label: string;
-    subLabel?: string;
-    className?: string;
-    children?: React.ReactNode;
-}
-
-const Button: React.FC<ButtonProps> = ({ label, subLabel, className = '', children }) => (
-    <button className={`button ${className}`}>
-        {label}
-        {subLabel && (
-            <>
-                <span className="button-divider"></span>
-                <span className="sub-label">{subLabel}</span>
-            </>
-        )}
-        {children}
-    </button>
-);
 
 const ControlPanel: React.FC = () => (
     <div className="control-panel">
         <div className="button-grid">
-            <Button label="LITE" />
-            <Button label="FREQ" />
-            <Button label="TEST" />
-            <Button label="FNC" subLabel="RST" className="fnc-rst-button" />
-            <Button label="CLR" className="arrow-button">
+            <Button1Lite/>
+            <Button2Freq/>
+            <Button3Test/>
+            <Button4FncRst label="FNC" subLabel="RST" className="fnc-rst-button" />
+            <Button5Clr label="CLR" className="arrow-button">
                 <span className="arrow down">▼</span>
-            </Button>
-            <Button label="SEC" className="arrow-button">
+            </Button5Clr>
+            <Button6Sec label="SEC" className="arrow-button">
                 <span className="arrow up">▲</span>
-            </Button>
-            <Button label="AJ" className="arrow-button">
+            </Button6Sec>
+            <Button7Aj label="AJ" className="arrow-button">
                 <span className="arrow right">►</span>
-            </Button>
-            <Button label="ENT" />
+            </Button7Aj>
+            <Button8Ent/>
         </div>
         <div className="ers-container">
             <div className="ers-lines">

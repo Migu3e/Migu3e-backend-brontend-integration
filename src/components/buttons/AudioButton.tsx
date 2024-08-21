@@ -4,17 +4,30 @@ interface AudioButtonProps {
     onMouseDown?: () => void;
     onMouseUp?: () => void;
     className?: string;
+    isOn?: boolean
 }
 
 const AudioButton: React.FC<AudioButtonProps> = (props:AudioButtonProps) => {
     return (
-        <button
-            onMouseDown={props.onMouseDown}
-            onMouseUp={props.onMouseUp}
-            className={props.className}
-        >
-            Transmit
-        </button>
+        <>
+            {props.isOn ? (
+                <button
+                    onMouseDown={props.onMouseDown}
+                    onMouseUp={props.onMouseUp}
+                    className={props.className}
+                >
+                    Transmit
+                </button>
+            ): (
+                <button
+                    className={props.className}
+                >
+                    Transmit
+                </button>
+            )
+
+            }
+        </>
     );
 };
 

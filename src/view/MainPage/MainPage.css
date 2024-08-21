@@ -14,7 +14,7 @@
     }
 
     .main {
-        @apply mt-[40px];
+        @apply mt-[40px] pb-[40px];
     }
 
     .main-page-name {
@@ -22,7 +22,7 @@
     }
 
     .main-box {
-        @apply bg-[#282828] rounded-lg p-10 w-[450px] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center relative;
+        @apply bg-[#282828] rounded-lg p-10 w-[430px] h-[920px] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center relative;
     }
 
     .main-page__logo {
@@ -38,7 +38,7 @@
     }
 
     .main-page__button {
-        @apply bg-[#1DB954] mt-4 text-white border-none rounded-[500px] py-[14px] px-[32px] text-base font-bold cursor-pointer w-full mb-[15px] transition-colors duration-300;
+        @apply bg-[#c1bb00] text-white border-none rounded-[500px] py-[13px] text-base font-bold cursor-pointer w-full transition-colors duration-300;
     }
 
     .main-page__button:hover {
@@ -46,20 +46,28 @@
     }
 
     .main-page__button--transmitting {
-        @apply bg-[#E91429];
+        @apply bg-[#E91429] text-white border-none rounded-[500px] py-[13px] text-base font-bold cursor-pointer w-full transition-colors duration-300;
     }
 
     .main-page__button--transmitting:hover {
         @apply bg-[#ff1e3c] text-[#6a0000];
     }
 
-    .main-page__button--disconnect {
-        @apply bg-[#535353];
+    .main-page-button-disconnect {
+        @apply bg-[#535353] text-white border-none rounded-[500px] py-[13px] text-base font-bold cursor-pointer w-full transition-colors duration-300;
+
     }
 
-    .main-page__button--disconnect:hover {
+    .main-page-button-disconnect:hover {
         @apply bg-[#6a0000] text-black;
     }
 
+    .main-page-button-off {
+        @apply bg-[#949494] text-white border-none rounded-[500px] py-[13px] text-base font-bold cursor-pointer w-full transition-colors duration-300;
+    }
+
+    .main-page-button-off:hover {
+        @apply bg-[#404040] text-[#b2b2b2];
+    }
 
 }

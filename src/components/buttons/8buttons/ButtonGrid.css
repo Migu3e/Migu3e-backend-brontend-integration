@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body, html {
+        @apply m-0 p-0 h-full font-sans bg-[#121212];
+    }
+}
+
+@layer components {
+    .control-panel {
+        @apply bg-[#282828] pt-4 pb-2 inline-block rounded-md;
+    }
+
+    .button-grid {
+        @apply grid grid-cols-4 gap-2 mb-2;
+    }
+
+    .button {
+        @apply w-16 h-16 bg-[#2d3748] text-[#fbbf24] rounded-full flex flex-col items-center justify-center text-xs font-bold border-none cursor-pointer relative overflow-hidden;
+    }
+
+    .sub-label {
+        @apply text-white text-xs absolute bottom-1;
+    }
+
+    .button-divider {
+        @apply absolute left-2 right-2 bottom-[38px] h-[3px] bg-white;
+    }
+
+    .fnc-rst-button {
+        @apply flex flex-col justify-between py-3;
+    }
+
+    .fnc-rst-button .sub-label {
+        @apply static;
+    }
+
+    .arrow-button {
+        @apply relative;
+    }
+
+    .arrow {
+        @apply absolute text-xs;
+    }
+
+    .arrow.down {
+        @apply bottom-1;
+    }
+
+    .arrow.up {
+        @apply top-1;
+    }
+
+    .arrow.right {
+        @apply right-2;
+    }
+
+    .ers-container {
+        @apply relative mt-1;
+    }
+
+    .ers-lines {
+        @apply absolute top-0 left-1/2 transform -translate-x-1/2 w-20 flex justify-between;
+    }
+
+    .ers-line {
+        @apply w-8 h-px bg-white;
+    }
+
+    .ers-text {
+        @apply text-white text-xs text-center;
+    }
+}
