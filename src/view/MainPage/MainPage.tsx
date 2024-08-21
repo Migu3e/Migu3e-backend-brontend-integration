@@ -50,7 +50,6 @@ const MainPage: React.FC = () => {
         <div className="main">
             <div className="main-page">
                 <div className="main-box">
-
                     <div className="absolute top-4 right-4">
                         <ChannelKnob channel={channel} setChannel={setChannel} sendChannelFrequency={sendChannelFrequency}/>
                     </div>
@@ -64,11 +63,10 @@ const MainPage: React.FC = () => {
                         <img src="/vite.svg" alt="Logo" className="main-page__logo"/>
                     </div>
                     <h1 className="main-page__title">AudioPTTCLIENT</h1>
-
                     <StatusDisplay clientId={clientId || 'Error'} volume={volume} channel={channel} frequency={currentFrequency} isOn={isOn}/>
                     <AudioButton onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} className={isOn ? `main-page__button ${isTransmitting ? 'main-page__button--transmitting' : ''}`  : 'main-page-button-off'}  isOn={isOn}/>
                     <ButtonGrid/>
-                    <DisconnectButton onClick={() => {disconnect();navigate('/');}}className="main-page-button-disconnect"/>
+                    <DisconnectButton onClick={() => {disconnect();navigate('/');}} className="main-page-button-disconnect"/>
                 </div>
             </div>
         </div>

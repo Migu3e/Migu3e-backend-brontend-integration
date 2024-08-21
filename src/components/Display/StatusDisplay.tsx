@@ -22,7 +22,7 @@ interface StatusDisplayProps {
     isOn: boolean;
 }
 
-const StatusDisplay: React.FC<StatusDisplayProps> = (props) => {
+const StatusDisplay: React.FC<StatusDisplayProps> = (props:StatusDisplayProps) => {
     const currentDate = new Date().toLocaleDateString();
 
     return (
