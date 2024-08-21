@@ -43,7 +43,6 @@ const MainPage: React.FC = () => {
         setIsOn(newState);
         sendOnOffState(newState ? 'ON' : 'OFF');
     };
-
     const currentFrequency = CHANNEL_FREQUENCIES.find(c => c.channel === channel)?.frequency;
 
     return (
