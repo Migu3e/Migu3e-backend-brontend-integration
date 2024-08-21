@@ -7,7 +7,7 @@ const StatusDisplay = styled.div`
     padding: 10px;
     border-radius: 5px;
     width: 310px;
-    height: 170px;
+    height: 190px;
 
 
 `;
@@ -43,13 +43,22 @@ const ClientIdItem = styled(StatusItem)`
 `;
 
 const StatusLabel = styled.div`
-    font-size: 12px;
+    font-size: 16px;
     margin-bottom: 2px;
 `;
+const StatusFreqLabel = styled(StatusLabel)`
+    font-size: 17px;
+    margin-bottom: 3px;
+    font-weight: bold;
+`;
+
 
 const StatusValue = styled.div`
     font-size: 16px;
-    font-weight: bold;
+`;
+const StatusFreqValue = styled(StatusValue)`
+    font-size: 17px;
+    font-weight: bolder;
 `;
 
 const DisplayOn = styled(StatusDisplay)`
@@ -60,8 +69,7 @@ const DisplayOn = styled(StatusDisplay)`
 const DisplayOff = styled(StatusDisplay)`
     background-color: #3e3c1d;
     margin-bottom: 63px;
-    width: 310px;
-    height: 170px;
+
 `;
 
 export {
@@ -75,5 +83,7 @@ export {
     StatusLabel,
     StatusValue,
     DisplayOn,
+    StatusFreqLabel,
+    StatusFreqValue,
     DisplayOff,
 };

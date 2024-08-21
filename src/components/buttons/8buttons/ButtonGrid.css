@@ -1,107 +1,75 @@
-.control-panel {
-    background-color: #282828;
-    padding-top: 1rem;
-    padding-bottom: 0.5rem;
-    display: inline-block;
-    border-radius: 0.5rem;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body, html {
+        @apply m-0 p-0 h-full font-sans bg-[#121212];
+    }
 }
 
-.button-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-}
+@layer components {
+    .control-panel {
+        @apply bg-[#282828] pt-4 pb-2 inline-block rounded-md;
+    }
 
-.button {
-    width: 4rem;
-    height: 4rem;
-    background-color: #2d3748;
-    color: #fbbf24;
-    border-radius: 9999px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
+    .button-grid {
+        @apply grid grid-cols-4 gap-2 mb-2;
+    }
 
-.sub-label {
-    color: white;
-    font-size: 0.78rem;
-    position: absolute;
-    bottom: 0.25rem;
-}
+    .button {
+        @apply w-16 h-16 bg-[#2d3748] text-[#fbbf24] rounded-full flex flex-col items-center justify-center text-xs font-bold border-none cursor-pointer relative overflow-hidden;
+    }
 
-.button-divider {
-    position: absolute;
-    left: 8px;
-    right: 8px;
-    bottom: 1.9rem;
-    height: 3px;
-    background-color: white;
-}
+    .sub-label {
+        @apply text-white text-xs absolute bottom-1;
+    }
 
-.fnc-rst-button {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-}
+    .button-divider {
+        @apply absolute left-2 right-2 bottom-[38px] h-[3px] bg-white;
+    }
 
-.fnc-rst-button .sub-label {
-    position: static;
-}
+    .fnc-rst-button {
+        @apply flex flex-col justify-between py-3;
+    }
 
-.arrow-button {
-    position: relative;
-}
+    .fnc-rst-button .sub-label {
+        @apply static;
+    }
 
-.arrow {
-    position: absolute;
-    font-size: 0.75rem;
-}
+    .arrow-button {
+        @apply relative;
+    }
 
-.arrow.down {
-    bottom: 0.25rem;
-}
+    .arrow {
+        @apply absolute text-xs;
+    }
 
-.arrow.up {
-    top: 0.25rem;
-}
+    .arrow.down {
+        @apply bottom-1;
+    }
 
-.arrow.right {
-    right: 0.5rem;
-}
+    .arrow.up {
+        @apply top-1;
+    }
 
-.ers-container {
-    position: relative;
-    margin-top: 0.25rem;
-}
+    .arrow.right {
+        @apply right-2;
+    }
 
-.ers-lines {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 5rem;
-    display: flex;
-    justify-content: space-between;
-}
+    .ers-container {
+        @apply relative mt-1;
+    }
 
-.ers-line {
-    width: 2rem;
-    height: 1px;
-    background-color: white;
-}
+    .ers-lines {
+        @apply absolute top-0 left-1/2 transform -translate-x-1/2 w-20 flex justify-between;
+    }
 
-.ers-text {
-    color: white;
-    font-size: 0.75rem;
-    text-align: center;
+    .ers-line {
+        @apply w-8 h-px bg-white;
+    }
+
+    .ers-text {
+        @apply text-white text-xs text-center;
+    }
 }

@@ -10,6 +10,8 @@ import {
     StatusValue as StyledStatusValue,
     DisplayOn as StyledDisplayOn,
     DisplayOff as StyledDisplayOff,
+    StatusFreqLabel as StyledStatusFreq,
+    StatusFreqValue as StyledStatusFreqValue
 } from './StatusDisplayStyle.tsx';
 
 interface StatusDisplayProps {
@@ -44,8 +46,8 @@ const StatusDisplay: React.FC<StatusDisplayProps> = (props) => {
                         </StyledStatusRow>
                         <StyledStatusRowOther>
                             <StyledStatusItem>
-                                <StyledStatusLabel>Frequency:</StyledStatusLabel>
-                                <StyledStatusValue>{props.frequency}.0000</StyledStatusValue>
+                                <StyledStatusFreq>Frequency:</StyledStatusFreq>
+                                <StyledStatusFreqValue>{props.frequency}.0000</StyledStatusFreqValue>
                             </StyledStatusItem>
                         </StyledStatusRowOther>
                         <StyledStatusRowOther>

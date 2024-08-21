@@ -1,4 +1,6 @@
-
+.status-display {
+    @apply font-mono text-[#002942] bg-[#55521f] p-2.5 rounded-md w-[310px] h-[170px];
+}
 
 .status-row {
     @apply flex justify-between mb-2.5;
