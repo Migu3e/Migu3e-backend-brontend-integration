@@ -32,4 +32,11 @@
     .connection-page__button:hover {
         @apply bg-[#282828] text-[#1DB954];
     }
+    .connection-page__input {
+        @apply bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-3 px-6 text-base w-full mb-6 focus:outline-none focus:border-[#1DB954] transition-colors duration-300;
+    }
+
+    .connection-page__input::placeholder {
+        @apply text-[#B3B3B3];
+    }
 }

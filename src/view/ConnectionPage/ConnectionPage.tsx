@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ConnectButton from '../../components/buttons/ConnectButton';
-import { useWebSocketController } from '../../controller/WebSocketController.tsx';
+import { useWebSocketController } from '../../controller/WebSocketController';
 import './ConnectionPage.css';
 
 const ConnectionPage: React.FC = () => {
     const navigate = useNavigate();
     const { connect } = useWebSocketController();
-    const [serverAddress, setServerAddress] = useState('localhost');
+    const [serverAddress, setServerAddress] = useState<string>('localhost');
 
     const handleConnect = async () => {
         try {
@@ -22,14 +22,14 @@ const ConnectionPage: React.FC = () => {
         <div className="connection-page">
             <div className="connection-box">
                 <div className="connection-page__logo_container">
-                    <img src="../../../public/vite.svg" alt="Logo" className="connection-page__logo"/>
+                    <img src="/vite.svg" alt="Logo" className="connection-page__logo"/>
                 </div>
                 <h1 className="connection-page__title">AudioPTTCLIENT</h1>
                 <input
                     type="text"
                     value={serverAddress}
                     onChange={(e) => setServerAddress(e.target.value)}
-                    placeholder="Enter server IP address"
+                    placeholder="enter server IP"
                     className="connection-page__input"
                 />
                 <ConnectButton onClick={handleConnect} className="connection-page__button" />
