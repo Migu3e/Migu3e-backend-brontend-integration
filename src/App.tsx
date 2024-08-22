@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { WebSocketControllerContext } from './controller/WebSocketContext';
+import { WebSocketControllerContext } from './services/Context/WebSocketContext.tsx';
 import ConnectionPage from './view/ConnectionPage/ConnectionPage';
 import MainPage from './view/MainPage/MainPage';
 

@@ -1,4 +1,4 @@
-import { useWebSocketContext } from './WebSocketContext';
+import { useWebSocketContext } from '../services/Context/WebSocketContext.tsx';
 
 export const useWebSocketController = () => {
     const {

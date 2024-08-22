@@ -7,7 +7,7 @@ import ChannelKnob from '../../components/buttons/Knob/ChannelKnob';
 import VolumeKnob from '../../components/buttons/Knob/VolumeKnob';
 import OnOffSwitch from '../../components/buttons/onoff/OnOffSwitch';
 import StatusDisplay from '../../components/Display/StatusDisplay.tsx';
-import { useWebSocketController } from '../../controller/WebSocketController';
+import { useWebSocketController } from '../../controller/useWebSocketController.tsx';
 import { CHANNEL_FREQUENCIES } from "../../models/ChannelFrequencies";
 import './MainPage.css';
 

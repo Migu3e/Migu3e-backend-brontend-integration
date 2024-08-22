@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import * as AudioService from '../services/Utils/AudioReletedUtils/AudioServiceUtils';
-import * as FullAudioService from '../services/Utils/AudioReletedUtils/FullAudioMakerUtils';
-import { handleIncomingMessage, cleanupAudioContext } from '../services/Utils/AudioReletedUtils/AudioReceiverUtils';
-import { sendAudioChunk, sendFullAudio, setSocket } from '../services/Utils/AudioReletedUtils/AudioSenderUtils';
+import * as AudioService from '../Utils/AudioReletedUtils/AudioServiceUtils.tsx';
+import * as FullAudioService from '../Utils/AudioReletedUtils/FullAudioMakerUtils.tsx';
+import { handleIncomingMessage, cleanupAudioContext } from '../Utils/AudioReletedUtils/AudioReceiverUtils.tsx';
+import { sendAudioChunk, sendFullAudio, setSocket } from '../Utils/AudioReletedUtils/AudioSenderUtils.tsx';
 
 interface WebSocketContextType {
     socket: WebSocket | null;
