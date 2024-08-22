@@ -4,17 +4,17 @@
 
 @layer base {
     body, html {
-        @apply m-0 p-0 h-full font-sans bg-[#121212];
+        @apply m-0 p-0 h-full font-sans bg-[#121212] overflow-auto;
     }
 }
 
 @layer components {
     .main-page {
-        @apply flex justify-center items-center mt-5;
+        @apply flex justify-center items-center mt-[1.25rem];
     }
 
     .main {
-        @apply mt-[40px] pb-[40px];
+        @apply mt-[2.5rem] pb-[2.5rem];
     }
 
     .main-page-name {
@@ -22,23 +22,23 @@
     }
 
     .main-box {
-        @apply bg-[#282828] rounded-lg p-10 w-[430px] h-[920px] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center relative;
+        @apply bg-[#282828] rounded-lg p-[2.5rem] w-[22.775rem] h-[51.5rem] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center relative;
     }
 
     .main-page__logo {
-        @apply w-[50px] h-[50px] mb-5;
+        @apply w-[3.125rem] h-[3.125rem] mb-[1.25rem];
     }
 
     .main-page__title {
-        @apply text-white text-[28px] mb-5;
+        @apply text-white text-[1.75rem] mb-[1.25rem];
     }
 
     .main-page__client-id {
-        @apply text-[#1DB954] text-[20px];
+        @apply text-[#1DB954] text-[1.25rem];
     }
 
     .main-page__button {
-        @apply bg-[#c1bb00] text-white border-none rounded-[500px] py-[13px] text-base font-bold cursor-pointer w-full transition-colors duration-300;
+        @apply bg-[#c1bb00] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300;
     }
 
     .main-page__button:hover {
@@ -46,7 +46,7 @@
     }
 
     .main-page__button--transmitting {
-        @apply bg-[#E91429] text-white border-none rounded-[500px] py-[13px] text-base font-bold cursor-pointer w-full transition-colors duration-300;
+        @apply bg-[#E91429] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300;
     }
 
     .main-page__button--transmitting:hover {
@@ -54,8 +54,7 @@
     }
 
     .main-page-button-disconnect {
-        @apply bg-[#535353] text-white border-none rounded-[500px] py-[13px] text-base font-bold cursor-pointer w-full transition-colors duration-300;
-
+        @apply bg-[#535353] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300;
     }
 
     .main-page-button-disconnect:hover {
@@ -63,11 +62,10 @@
     }
 
     .main-page-button-off {
-        @apply bg-[#949494] text-white border-none rounded-[500px] py-[13px] text-base font-bold cursor-pointer w-full transition-colors duration-300;
+        @apply bg-[#949494] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300;
     }
 
     .main-page-button-off:hover {
         @apply bg-[#404040] text-[#b2b2b2];
     }
-
 }

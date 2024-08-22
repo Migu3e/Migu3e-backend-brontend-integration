@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ConnectButton from '../../components/buttons/ConnectButton';
-import { useWebSocketController } from '../../controller/WebSocketController';
+import { useWebSocketController } from '../../controller/useWebSocketController.tsx';
 import './ConnectionPage.css';
 
 const ConnectionPage: React.FC = () => {

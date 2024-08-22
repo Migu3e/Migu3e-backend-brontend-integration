@@ -19,18 +19,23 @@
 
     .button {
         @apply w-16 h-16 bg-[#2d3748] text-[#fbbf24] rounded-full flex flex-col items-center justify-center text-xs font-bold border-none cursor-pointer relative overflow-hidden;
+        font-size: 0.75rem;
     }
 
     .sub-label {
         @apply text-white text-xs absolute bottom-1;
+        font-size: 0.75rem;
     }
 
     .button-divider {
-        @apply absolute left-2 right-2 bottom-[38px] h-[3px] bg-white;
+        @apply absolute left-2 right-2 bg-white;
+        bottom: 1.905rem;
+        height: 0.1875rem;
     }
 
     .fnc-rst-button {
-        @apply flex flex-col justify-between py-3;
+        @apply flex flex-col justify-between;
+        padding: 0.75rem 0;
     }
 
     .fnc-rst-button .sub-label {
@@ -43,18 +48,19 @@
 
     .arrow {
         @apply absolute text-xs;
+        font-size: 0.75rem;
     }
 
     .arrow.down {
-        @apply bottom-1;
+        bottom: 0.25rem;
     }
 
     .arrow.up {
-        @apply top-1;
+        top: 0.25rem;
     }
 
     .arrow.right {
-        @apply right-2;
+        right: 0.5rem;
     }
 
     .ers-container {
@@ -62,14 +68,18 @@
     }
 
     .ers-lines {
-        @apply absolute top-0 left-1/2 transform -translate-x-1/2 w-20 flex justify-between;
+        @apply absolute top-0 left-1/2 transform -translate-x-1/2 flex justify-between;
+        width: 5rem;
     }
 
     .ers-line {
-        @apply w-8 h-px bg-white;
+        @apply bg-white;
+        width: 2rem;
+        height: 0.0625rem;
     }
 
     .ers-text {
         @apply text-white text-xs text-center;
+        font-size: 0.75rem;
     }
 }

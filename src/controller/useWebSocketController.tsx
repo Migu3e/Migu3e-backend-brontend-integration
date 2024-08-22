@@ -1,4 +1,4 @@
-import { useWebSocket } from './WebSocketContext';
+import { useWebSocketContext } from '../services/Context/WebSocketContext.tsx';
 
 export const useWebSocketController = () => {
     const {
@@ -11,7 +11,7 @@ export const useWebSocketController = () => {
         sendChannelFrequency,
         sendVolumeLevel,
         sendOnOffState
-    } = useWebSocket();
+    } = useWebSocketContext();
 
     return {
         connect,
