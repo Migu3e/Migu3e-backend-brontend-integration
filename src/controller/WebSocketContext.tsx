@@ -19,7 +19,7 @@ interface WebSocketContextType {
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
-export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const WebSocketControllerContext: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [socket, setWebSocket] = useState<WebSocket | null>(null);
     const [clientId, setClientId] = useState<string | null>(null);
 
@@ -91,7 +91,7 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
     };
     const sendVolumeLevel = (volume: number): void => {
         if (socket && socket.readyState === WebSocket.OPEN) {
-            const message : string = `VUL|${volume}`; // Combine ID string with volume
+            const message : string = `VUL|${volume}`;
             console.log(`Sending volume level: ${message}`);
             socket.send(message);
         } else {
@@ -109,7 +109,7 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
     };
     useEffect(() => {
         AudioService.startAudioService(sendAudioChunk, FullAudioService.handleTransmissionStop);
-        FullAudioService.initializeFullAudioService(sendFullAudio);
+        FullAudioService.startFullAudioService(sendFullAudio);
     }, []);
 
     return (
@@ -132,7 +132,7 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
     );
 };
 
-export const useWebSocket = (): WebSocketContextType => {
+export const useWebSocketContext = (): WebSocketContextType => {
     const context = useContext(WebSocketContext);
     if (!context)
     {

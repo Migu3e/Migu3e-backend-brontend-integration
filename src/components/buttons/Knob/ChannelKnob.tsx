@@ -8,14 +8,14 @@ interface RotatingKnobProps {
     sendChannelFrequency: (frequency: number) => void;
 }
 
-const RotatingKnob: React.FC<RotatingKnobProps> = ({ channel, setChannel, sendChannelFrequency }) => {
+const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
     const [rotation, setRotation] = useState(0);
     const knobRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const newRotation = (channel - 1) * (360 / CHANNEL_FREQUENCIES.length);
+        const newRotation = (prop.channel - 1) * (360 / CHANNEL_FREQUENCIES.length);
         setRotation(newRotation);
-    }, [channel]);
+    }, [prop.channel]);
 
     const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -34,10 +34,10 @@ const RotatingKnob: React.FC<RotatingKnobProps> = ({ channel, setChannel, sendCh
             const channelIndex = Math.round((newRotation / 360) * CHANNEL_FREQUENCIES.length);
             const newChannel = (channelIndex % CHANNEL_FREQUENCIES.length) + 1;
 
-            setChannel(newChannel);
+            prop.setChannel(newChannel);
             const selectedFrequency = CHANNEL_FREQUENCIES.find((ch) => ch.channel === newChannel)?.frequency;
             if (selectedFrequency) {
-                sendChannelFrequency(selectedFrequency);
+                prop.sendChannelFrequency(selectedFrequency);
             }
         };
 

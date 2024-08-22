@@ -1,13 +1,13 @@
 import * as AudioService from './AudioServiceUtils.tsx';
 
-interface SendFullAudioCallback {
+interface SendFullAudioInterface {
     (fullAudio: ArrayBuffer): void;
 }
 
-let sendFullAudio: SendFullAudioCallback;
+let sendFullAudio: SendFullAudioInterface;
 
-export const initializeFullAudioService = (
-    sendFullAudioCallback: SendFullAudioCallback
+export const startFullAudioService = (
+    sendFullAudioCallback: SendFullAudioInterface
 ): void => {
     sendFullAudio = sendFullAudioCallback;
 };

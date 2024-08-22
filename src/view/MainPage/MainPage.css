@@ -22,7 +22,7 @@
     }
 
     .main-box {
-        @apply bg-[#282828] rounded-lg p-[2.5rem] w-[24.775rem] h-[51.5rem] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center relative;
+        @apply bg-[#282828] rounded-lg p-[2.5rem] w-[22.775rem] h-[51.5rem] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center relative;
     }
 
     .main-page__logo {
