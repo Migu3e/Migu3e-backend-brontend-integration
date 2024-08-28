@@ -4,6 +4,8 @@ import AudioButton from '../../components/buttons/AudioButton';
 import DisconnectButton from '../../components/buttons/DisconnectButton';
 import ButtonGrid from '../../components/buttons/8buttons/ButtonGrid';
 import ChannelKnob from '../../components/buttons/Knob/ChannelKnob';
+import FrequencyKnob from '../../components/buttons/Knob/frequencyKnob.tsx';
+
 import VolumeKnob from '../../components/buttons/Knob/VolumeKnob';
 import OnOffSwitch from '../../components/buttons/onoff/OnOffSwitch';
 import StatusDisplay from '../../components/Display/StatusDisplay.tsx';
@@ -16,6 +18,8 @@ const MainPage: React.FC = () => {
     const [clientId, setClientId] = useState<string | null>(null);
     const [isTransmitting, setIsTransmitting] = useState(false);
     const [channel, setChannel] = useState(1);
+    const [Freqeunsy, setFreqeunsy] = useState(1);
+
     const [volume, setVolume] = useState(50);
     const [isOn, setIsOn] = useState(false);
     const {getClientId,isConnected,startTransmission,stopTransmission,disconnect,sendChannelFrequency,sendVolumeLevel,sendOnOffState} = useWebSocketController();
@@ -52,14 +56,14 @@ const MainPage: React.FC = () => {
                     <div className="absolute top-4 right-4">
                         <ChannelKnob channel={channel} setChannel={setChannel} sendChannelFrequency={sendChannelFrequency}/>
                     </div>
-                    <div className="absolute top-5">
+                    <div>
+                        <FrequencyKnob Frequency={Freqeunsy} setFrequency={setFreqeunsy} sendChannelFrequency={sendChannelFrequency}/>
+                    </div>
+                    <div className="mt-5">
                         <OnOffSwitch isOn={isOn} onToggle={handleOnOffToggle}/>
                     </div>
                     <div className="absolute top-4 left-4">
                         <VolumeKnob volume={volume} setVolume={setVolume} sendVolumeLevel={sendVolumeLevel}/>
-                    </div>
-                    <div className="mt-10">
-                        <img src="/vite.svg" alt="Logo" className="main-page__logo"/>
                     </div>
                     <h1 className="main-page__title">AudioPTTCLIENT</h1>
                     <StatusDisplay clientId={clientId || 'Error'} volume={volume} channel={channel} frequency={currentFrequency} isOn={isOn}/>
