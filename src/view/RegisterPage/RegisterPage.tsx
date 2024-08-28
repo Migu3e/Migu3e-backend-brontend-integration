@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ConnectButton from '../../components/buttons/ConnectButton';
 import { useWebSocketController } from '../../controller/useWebSocketController.tsx';
-import './ConnectionPage.css';
-import RegisterButton from "../../components/buttons/RegisterPage.tsx";
+import './RegisterPage.css';
+import LoginButton from "../../components/buttons/LoginButton.tsx";
 
-const ConnectionPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
     const navigate = useNavigate();
     const { connect } = useWebSocketController();
     const [serverAddress, setServerAddress] = useState<string>('');
     const [personalNumber, setPersonalNumber] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [passwordagain, setPasswordAgain] = useState<string>('');
+    const [selectedOption, setSelectedOption] = useState<number>(1);
 
     const handleConnect = async () => {
         try {
@@ -20,14 +22,17 @@ const ConnectionPage: React.FC = () => {
             console.error('Connection error:', error);
         }
     };
-    const handleRegister = async () => {
+    const handleLogin = async () => {
         try {
-           
-            navigate('/register');
+            navigate('/');
         } catch (error) {
             console.error('Connection error:', error);
         }
-    }
+    };
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedOption(Number(e.target.value));
+    };
+
 
     return (
         <div className="connection-page">
@@ -50,6 +55,7 @@ const ConnectionPage: React.FC = () => {
                     placeholder="Enter personal number"
                     className="connection-page__input"
                 />
+
                 <input
                     type="password"
                     value={password}
@@ -57,12 +63,30 @@ const ConnectionPage: React.FC = () => {
                     placeholder="Enter password"
                     className="connection-page__input"
                 />
+                
+                <input
+                    type="password"
+                    value={passwordagain}
+                    onChange={(e) => setPasswordAgain(e.target.value)}
+                    placeholder="Enter password again"
+                    className="connection-page__input"
+                />   
+                <select
+                    value={selectedOption}
+                    onChange={handleSelectChange}
+                    className="connection-page__input_select">
+                            
+                        <option value={1}>חייל היבשה</option>
+                        <option value={2}>חייל הים</option>
+                        <option value={3}>חייל היבשה</option>
+                        <option value={4}>מג"ב</option>
+                </select>
                 <ConnectButton onClick={handleConnect} className="connection-page__button"/>
-                <RegisterButton onClick={handleRegister} className="connection-page__button_Login"/>
+                <LoginButton onClick={handleLogin} className="connection-page__button_Login"/>
 
             </div>
         </div>
     );
 };
 
-export default ConnectionPage;
+export default RegisterPage;

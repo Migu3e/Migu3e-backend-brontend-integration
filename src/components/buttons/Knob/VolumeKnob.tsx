@@ -4,10 +4,9 @@ import './Knob.css';
 interface VolumeKnobProps {
     volume: number;
     setVolume: (volume: number) => void;
-    sendVolumeLevel: (volume: number) => void;
 }
 
-const VolumeKnob: React.FC<VolumeKnobProps> = ({ volume, setVolume, sendVolumeLevel }) => {
+const VolumeKnob: React.FC<VolumeKnobProps> = ({ volume, setVolume }) => {
     const [rotation, setRotation] = useState(0);
     const knobRef = useRef<HTMLDivElement>(null);
 
@@ -32,7 +31,7 @@ const VolumeKnob: React.FC<VolumeKnobProps> = ({ volume, setVolume, sendVolumeLe
 
             const newVolume = Math.round((newRotation / 270) * 10) * 10;
             setVolume(newVolume);
-            sendVolumeLevel(newVolume);
+
         };
 
         const handleMouseUp = () => {

@@ -26,23 +26,19 @@
     }
 
     .connection-page__button {
-        @apply bg-[#1DB954] text-white border border-[#1DB954] rounded-full py-[0.875rem] px-[2rem] m-3 text-base font-bold w-full transition-colors duration-300;
-    }
-
-    .connection-page__button_Login {
-        @apply bg-[#CDFD02] text-white border border-[#CDFD02] rounded-full py-[0.875rem] px-[2rem] text-base font-bold w-full transition-colors duration-300;
+        @apply bg-[#1DB954] text-white border border-[#1DB954] rounded-full py-[0.875rem] px-[2rem] text-base font-bold w-full transition-colors duration-300;
     }
 
     .connection-page__button:hover {
         @apply bg-[#282828] text-[#1DB954];
     }
 
-    .connection-page__button_Login:hover {
-        @apply bg-[#282828] text-[#CDFD02];
-    }
-
     .connection-page__input {
         @apply bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300;
+    }
+
+    .connection-page__input_select {
+        @apply bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300 text-center;
     }
 
     .connection-page__input::placeholder {

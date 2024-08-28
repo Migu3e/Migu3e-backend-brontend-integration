@@ -7,26 +7,44 @@ import ChannelKnob from '../../components/buttons/Knob/ChannelKnob';
 import VolumeKnob from '../../components/buttons/Knob/VolumeKnob';
 import OnOffSwitch from '../../components/buttons/onoff/OnOffSwitch';
 import StatusDisplay from '../../components/Display/StatusDisplay.tsx';
+import FrequencyKnob from '../../components/buttons/Knob/frequencyKnob.tsx';
 import { useWebSocketController } from '../../controller/useWebSocketController.tsx';
 import { CHANNEL_FREQUENCIES } from "../../models/ChannelFrequencies";
 import './MainPage.css';
 
 const MainPage: React.FC = () => {
     const navigate = useNavigate();
-    const [clientId, setClientId] = useState<string | null>(null);
     const [isTransmitting, setIsTransmitting] = useState(false);
     const [channel, setChannel] = useState(1);
     const [volume, setVolume] = useState(50);
     const [isOn, setIsOn] = useState(false);
-    const {getClientId,isConnected,startTransmission,stopTransmission,disconnect,sendChannelFrequency,sendVolumeLevel,sendOnOffState} = useWebSocketController();
+    const [Freqeunsy, setFreqeunsy] = useState(1);
+    const {
+        clientId,
+        isConnected,
+        startTransmission,
+        stopTransmission,
+        disconnect,
+        sendChannelFrequency,
+        sendVolumeLevel,
+        sendOnOffState,
+        getSettings
+    } = useWebSocketController();
 
     useEffect(() => {
-        setClientId(getClientId());
-    }, []);
+        const loadSettings = async () => {
+            const settings = await getSettings();
+            if (settings) {
+                setChannel(settings.channel);
+                setVolume(settings.volume);
+            }
+        };
+        loadSettings();
+    }, [getSettings]);
 
-    const handleMouseDown = () => {
+    const handleMouseDown = async () => {
         if (isConnected) {
-            startTransmission(channel);
+            await startTransmission();
             setIsTransmitting(true);
         } else {
             console.error('WebSocket is not connected');
@@ -38,11 +56,22 @@ const MainPage: React.FC = () => {
         setIsTransmitting(false);
     };
 
-    const handleOnOffToggle = () => {
+    const handleOnOffToggle = async () => {
         const newState = !isOn;
         setIsOn(newState);
-        sendOnOffState(newState ? 'ON' : 'OFF');
+        await sendOnOffState(newState);
     };
+
+    const handleChannelChange = async (newChannel: number) => {
+        setChannel(newChannel);
+        await sendChannelFrequency(newChannel);
+    };
+
+    const handleVolumeChange = async (newVolume: number) => {
+        setVolume(newVolume);
+        await sendVolumeLevel(newVolume);
+    };
+
     const currentFrequency = CHANNEL_FREQUENCIES.find(c => c.channel === channel)?.frequency;
 
     return (
@@ -50,26 +79,41 @@ const MainPage: React.FC = () => {
             <div className="main-page">
                 <div className="main-box">
                     <div className="absolute top-4 right-4">
-                        <ChannelKnob channel={channel} setChannel={setChannel} sendChannelFrequency={sendChannelFrequency}/>
+                        <ChannelKnob channel={channel} setChannel={handleChannelChange}/>
                     </div>
-                    <div className="absolute top-5">
+                    <div>
+                        <FrequencyKnob Frequency={Freqeunsy} setFrequency={setFreqeunsy}
+                                       sendChannelFrequency={sendChannelFrequency}/>
+                    </div>
+                    <div className="mt-5">
                         <OnOffSwitch isOn={isOn} onToggle={handleOnOffToggle}/>
                     </div>
                     <div className="absolute top-4 left-4">
-                        <VolumeKnob volume={volume} setVolume={setVolume} sendVolumeLevel={sendVolumeLevel}/>
+                        <VolumeKnob volume={volume} setVolume={handleVolumeChange}/>
                     </div>
-                    <div className="mt-10">
-                        <img src="/vite.svg" alt="Logo" className="main-page__logo"/>
-                    </div>
-                    <h1 className="main-page__title">AudioPTTCLIENT</h1>
-                    <StatusDisplay clientId={clientId || 'Error'} volume={volume} channel={channel} frequency={currentFrequency} isOn={isOn}/>
-                    <AudioButton onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} className={isOn ? `main-page__button ${isTransmitting ? 'main-page__button--transmitting' : ''}`  : 'main-page-button-off'}  isOn={isOn}/>
+
+                    <h1 className="main-page__title mt-2">AudioPTTCLIENT</h1>
+                    <StatusDisplay clientId={clientId || 'Error'} volume={volume} channel={channel}
+                                   frequency={currentFrequency} isOn={isOn}/>
+                    <AudioButton
+                        onMouseDown={handleMouseDown}
+                        onMouseUp={handleMouseUp}
+                        className={isOn ? `main-page__button ${isTransmitting ? 'main-page__button--transmitting' : ''}` : 'main-page-button-off'}
+                        isOn={isOn}
+                    />
                     <ButtonGrid/>
-                    <DisconnectButton onClick={() => {disconnect();navigate('/');}} className="main-page-button-disconnect"/>
+                    <DisconnectButton
+                        onClick={() => {
+                            disconnect();
+                            navigate('/');
+                        }}
+                        className="main-page-button-disconnect"
+                    />
                 </div>
             </div>
         </div>
     );
 };
+
 
 export default MainPage;
