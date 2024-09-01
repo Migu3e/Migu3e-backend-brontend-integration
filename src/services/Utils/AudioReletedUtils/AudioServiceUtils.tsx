@@ -59,6 +59,7 @@ export const stop = (): void => {
     }
     if (audioContext) {
         audioContext.close();
+        clearAudioChunks();
         audioContext = null;
     }
     onStop();

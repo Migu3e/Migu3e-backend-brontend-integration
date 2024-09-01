@@ -11,30 +11,34 @@ export function handleIncomingMessage(event: MessageEvent<ArrayBuffer | Blob>): 
 
 function handleBinaryMessage(buffer: ArrayBuffer): void {
     const data = new Uint8Array(buffer);
-    console.log(`Received binary message of length: ${data.length} bytes`);
+    console.log(`binary message of length: ${data.length} bytes`);
 
     if (data.length < 8) {
-        console.error('Message too short to process');
+        console.error('too short to work');
         return;
     }
 
-    if (data[0] === 0xAA && data[1] === 0xAA && data[2] === 0xAA && data[3] === 0xAA) {
+    if (data[0] === 0xAA && data[1] === 0xAA && data[2] === 0xAA) {
+        const receivedChannel: number = data[3];
         const sampleRate: number = new Uint32Array(data.buffer, 4, 1)[0];
         const audioData: Uint8Array = data.slice(8);
-        console.log(`Received audio chunk: sample rate ${sampleRate}, length ${audioData.length}`);
-        playAudioData(audioData.buffer, sampleRate);
-    } else {
-        console.error('Message with unknown header');
+        console.log(`received audio chunk: channel ${receivedChannel}, sample Rate ${sampleRate}, length ${audioData.length}`);
+        playAudioData(audioData.buffer);
+    }
+    else {
+        console.error('message with unknown header');
     }
 }
 
-async function playAudioData(audioData: ArrayBuffer, sampleRate: number): Promise<void> {
+async function playAudioData(audioData: ArrayBuffer): Promise<void> {
     if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext);
     }
 
     try {
+        const sampleRate: number = 44100;
         const numberOfChannels: number = 1;
+
         const audioBuffer: AudioBuffer = audioContext.createBuffer(numberOfChannels, audioData.byteLength / 2, sampleRate);
         const channelData: Float32Array = audioBuffer.getChannelData(0);
         const int16Array: Int16Array = new Int16Array(audioData);
@@ -48,12 +52,10 @@ async function playAudioData(audioData: ArrayBuffer, sampleRate: number): Promis
         source.connect(audioContext.destination);
         source.start();
 
-        console.log('Started playing audio chunk');
-
-        source.onended = () => console.log('Finished playing audio chunk');
+        source.onended = () => console.log('audio playback ended');
 
     } catch (error: unknown) {
-        console.error('Error playing audio:', error instanceof Error ? error.message : String(error));
+        console.error('error:', error instanceof Error ? error.message : String(error));
     }
 }
 

@@ -39,9 +39,15 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
             };
             newSocket.onmessage = (event) => {
                 console.log('WebSocket message received:', event.data);
-                if (typeof event.data === 'string' && event.data === 'Connected') {
-                    console.log('Connection confirmed by server');
-                    resolve();
+                if (typeof event.data === 'string') {
+                    if (event.data === 'Connected') {
+                        console.log('Connection confirmed by server');
+                        resolve();
+                    }
+
+                    else {
+                        handleIncomingMessage(event);
+                    }
                 } else {
                     handleIncomingMessage(event);
                 }
