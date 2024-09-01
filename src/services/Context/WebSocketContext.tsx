@@ -110,9 +110,8 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `onoff=${state}`,
         });
-        if (!response.ok) throw new Error('Failed to update volume');
+        if (!response.ok) throw new Error('Failed to update on/off state');
     };
-
     const getSettings = async (): Promise<{ channel: number; volume: number } | null> => {
         if (!clientId) return null;
 
