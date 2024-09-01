@@ -34,10 +34,10 @@ const ConnectionPage: React.FC = () => {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Login successful:', data);
-                await connect(serverAddress);
+                await connect(serverAddress, personalNumber); // Pass personalNumber as clientId
                 navigate('/main', {
                     state: {
-                        clientId: data.clientId,
+                        clientId: personalNumber, // Use personalNumber as clientId
                         type: data.type,
                         channel: data.channel,
                         frequency: data.frequency,
@@ -89,7 +89,7 @@ const ConnectionPage: React.FC = () => {
                     placeholder="Enter password"
                     className="connection-page__input"
                 />
-                <ConnectButton onClick={handleConnect} className="connection-page__button">Login</ConnectButton>
+                <ConnectButton onClick={handleConnect} className="connection-page__button"></ConnectButton>
                 <RegisterButton onClick={handleRegister} className="connection-page__button_Login"/>
             </div>
         </div>

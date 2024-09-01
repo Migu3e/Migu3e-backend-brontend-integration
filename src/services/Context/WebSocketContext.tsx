@@ -9,7 +9,7 @@ interface WebSocketContextType {
     socket: WebSocket | null;
     clientId: string | null;
     isConnected: boolean;
-    connect: (serverAddress: string) => Promise<void>;
+    connect: (serverAddress: string, clientId: string) => Promise<void>;
     disconnect: () => void;
     startTransmission: () => Promise<void>;
     stopTransmission: () => void;
@@ -26,21 +26,21 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
     const [clientId, setClientId] = useState<string | null>(null);
     const [serverAddress, setServerAddress] = useState<string>('');
 
-    const connect = async (address: string): Promise<void> => {
+    const connect = async (address: string, clientId: string): Promise<void> => {
         return new Promise((resolve, reject) => {
             const newSocket = new WebSocket(`ws://${address}:8081`);
             newSocket.onopen = () => {
-                console.log('Connected to server');
+                console.log('WebSocket connected, sending client ID');
+                newSocket.send(clientId);
                 setWebSocket(newSocket);
                 setSocket(newSocket);
                 setServerAddress(address);
-                resolve();
+                setClientId(clientId);
             };
             newSocket.onmessage = (event) => {
                 console.log('WebSocket message received:', event.data);
-                if (typeof event.data === 'string') {
-                    setClientId(event.data);
-                    console.log('Received client ID:', event.data);
+                if (typeof event.data === 'string' && event.data === 'Connected') {
+                    console.log('Connection confirmed by server');
                     resolve();
                 } else {
                     handleIncomingMessage(event);
@@ -85,55 +85,67 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
         const frequencyObj = CHANNEL_FREQUENCIES.find(cf => cf.channel === channel);
         if (!frequencyObj) throw new Error('Invalid channel');
 
-        const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `frequency=${frequencyObj.frequency.toFixed(4)}`,
-        });
-        if (!response.ok) throw new Error('Failed to update frequency');
+        try {
+            const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `frequency=${frequencyObj.frequency.toFixed(4)}`,
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to update frequency: ${response.status} ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error updating frequency:', error);
+            throw error;
+        }
     };
 
     const sendVolumeLevel = async (volume: number): Promise<void> => {
         if (!clientId) throw new Error('Client ID not set');
-        const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `volume=${volume}`,
-        });
-        if (!response.ok) throw new Error('Failed to update volume');
+        try {
+            const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `volume=${volume}`,
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to update volume: ${response.status} ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error updating volume:', error);
+            throw error;
+        }
     };
 
     const sendOnOffState = async (state: boolean): Promise<void> => {
         if (!clientId) throw new Error('Client ID not set');
-        const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `onoff=${state}`,
-        });
-        if (!response.ok) throw new Error('Failed to update on/off state');
+        try {
+            const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `onoff=${state}`,
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to update on/off state: ${response.status} ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error updating on/off state:', error);
+            throw error;
+        }
     };
+
     const getSettings = async (): Promise<{ channel: number; volume: number } | null> => {
         if (!clientId) return null;
 
         try {
             const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`);
-            console.log('Response status:', response.status);
-            console.log('Response content-type:', response.headers.get('content-type'));
-
-            const responseBody = await response.text();
-            console.log('Response body:', responseBody);
-
             if (!response.ok) {
-                console.error('Failed to fetch settings:', response.status, response.statusText);
-                return null;
+                throw new Error(`Failed to fetch settings: ${response.status}`);
             }
-
-            if (!responseBody) {
-                console.error('Response body is empty');
-                return null;
-            }
-
-            return JSON.parse(responseBody);
+            return await response.json();
         } catch (error) {
             console.error('Error fetching settings:', error);
             return null;
