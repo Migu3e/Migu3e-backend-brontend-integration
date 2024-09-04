@@ -3,7 +3,6 @@ import * as AudioService from '../Utils/AudioReletedUtils/AudioServiceUtils';
 import * as FullAudioService from '../Utils/AudioReletedUtils/FullAudioMakerUtils';
 import { handleIncomingMessage, cleanupAudioContext } from '../Utils/AudioReletedUtils/AudioReceiverUtils';
 import { sendAudioChunk, sendFullAudio, setSocket } from '../Utils/AudioReletedUtils/AudioSenderUtils';
-import {CHANNEL_FREQUENCIES} from "../../models/ChannelFrequencies.tsx";
 
 interface WebSocketContextType {
     socket: WebSocket | null;
@@ -13,10 +12,17 @@ interface WebSocketContextType {
     disconnect: () => void;
     startTransmission: () => Promise<void>;
     stopTransmission: () => void;
-    sendChannelFrequency: (channel: number) => Promise<void>;
+    sendChannelFrequency: (channel: number, frequency: number) => Promise<void>;
     sendVolumeLevel: (volume: number) => Promise<void>;
     sendOnOffState: (state: boolean) => Promise<void>;
-    getSettings: () => Promise<{ channel: number; volume: number } | null>;
+    getSettings: () => Promise<ClientSettings | null>;
+}
+interface ClientSettings {
+    channel: number;
+    volume: number;
+    frequency: number;
+    minFrequency: number;
+    maxFrequency: number;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -85,27 +91,16 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
         AudioService.clearAudioChunks();
     };
 
-    const sendChannelFrequency = async (channel: number): Promise<void> => {
+    const sendChannelFrequency = async (channel: number, frequency: number): Promise<void> => {
         if (!clientId) throw new Error('Client ID not set');
-
-        const frequencyObj = CHANNEL_FREQUENCIES.find(cf => cf.channel === channel);
-        if (!frequencyObj) throw new Error('Invalid channel');
-
-        try {
-            const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `frequency=${frequencyObj.frequency.toFixed(4)}`,
-            });
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Failed to update frequency: ${response.status} ${errorText}`);
-            }
-        } catch (error) {
-            console.error('Error updating frequency:', error);
-            throw error;
-        }
+        const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `channel=${channel}&frequency=${frequency.toFixed(4)}`,
+        });
+        if (!response.ok) throw new Error('Failed to update channel and frequency');
     };
+
 
     const sendVolumeLevel = async (volume: number): Promise<void> => {
         if (!clientId) throw new Error('Client ID not set');
@@ -143,15 +138,18 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
         }
     };
 
-    const getSettings = async (): Promise<{ channel: number; volume: number } | null> => {
+    const getSettings = async (): Promise<ClientSettings | null> => {
         if (!clientId) return null;
 
         try {
             const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`);
             if (!response.ok) {
-                throw new Error(`Failed to fetch settings: ${response.status}`);
+                console.error('Failed to fetch settings:', response.status, response.statusText);
+                return null;
             }
-            return await response.json();
+
+            const responseBody = await response.json();
+            return responseBody as ClientSettings;
         } catch (error) {
             console.error('Error fetching settings:', error);
             return null;

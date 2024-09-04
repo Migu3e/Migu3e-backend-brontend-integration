@@ -3,28 +3,47 @@ let socket: WebSocket | null = null;
 
 export function sendAudioChunk(audioChunk: ArrayBuffer): void {
     if (socket && socket.readyState === WebSocket.OPEN) {
-        const float32Data: Float32Array = new Float32Array(audioChunk);
-        const int16Data: Int16Array = new Int16Array(float32Data.length);
+        const byteLength = audioChunk.byteLength;
 
-        for (let i: number = 0; i < float32Data.length; i++) {
-            const sample: number = Math.max(-1, Math.min(1, float32Data[i]));
-            int16Data[i] = Math.floor(sample * 32767);
+        // Ensure the buffer length is divisible by 4 for Float32Array processing
+        if (byteLength % 4 !== 0) {
+            console.error(`ArrayBuffer length (${byteLength}) is not a multiple of 4. Adjusting size...`);
+
+            // Adjust the size by padding the buffer if necessary
+            const adjustedLength = byteLength + (4 - (byteLength % 4));
+            const tempBuffer = new Uint8Array(adjustedLength);
+            tempBuffer.set(new Uint8Array(audioChunk)); // Copy original data
+            audioChunk = tempBuffer.buffer;
         }
 
-        const header: Uint8Array = new Uint8Array([0xAA, 0xAA, 0xAA, 0xAA]);
-        const sampleRateBytes: Uint8Array = new Uint8Array(new Uint32Array([sampleRate]).buffer);
-        const message: Uint8Array = new Uint8Array(header.length + sampleRateBytes.length + int16Data.buffer.byteLength);
+        // Convert the buffer to Float32Array and then to Int16Array
+        const float32Data = new Float32Array(audioChunk);
+        const int16Data = new Int16Array(float32Data.length);
 
-        message.set(header);
-        message.set(sampleRateBytes, header.length);
-        message.set(new Uint8Array(int16Data.buffer), header.length + sampleRateBytes.length);
+        for (let i = 0; i < float32Data.length; i++) {
+            const sample = Math.max(-1, Math.min(1, float32Data[i])); // Clamp values between -1 and 1
+            int16Data[i] = Math.floor(sample * 32767); // Convert to Int16 range
+        }
 
-        socket.send(message.buffer);
+        // Create header for the message
+        const header = new Uint8Array([0xAA, 0xAA, 0xAA, 0xAA]);
+        const sampleRateBytes = new Uint8Array(new Uint32Array([sampleRate]).buffer);
+
+        // Construct the final message by combining the header, sample rate, and audio data
+        const message = new Uint8Array(header.length + sampleRateBytes.length + int16Data.buffer.byteLength);
+
+        message.set(header); // Add header
+        message.set(sampleRateBytes, header.length); // Add sample rate bytes
+        message.set(new Uint8Array(int16Data.buffer), header.length + sampleRateBytes.length); // Add audio data
+
+        socket.send(message.buffer); // Send the message
     }
 }
+
+
 export function sendFullAudio(fullAudio: ArrayBuffer): void {
     if (socket && socket.readyState === WebSocket.OPEN) {
-        console.log(`sending full audio of length: ${fullAudio.byteLength} bytes`);
+        console.log(`Sending full audio of length: ${fullAudio.byteLength} bytes`);
         socket.send(fullAudio);
     }
 }

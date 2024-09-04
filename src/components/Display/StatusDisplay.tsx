@@ -47,7 +47,7 @@ const StatusDisplay: React.FC<StatusDisplayProps> = (props:StatusDisplayProps) =
                         <StyledStatusRowOther>
                             <StyledStatusItem>
                                 <StyledStatusFreq>Frequency:</StyledStatusFreq>
-                                <StyledStatusFreqValue>{props.frequency}.0000</StyledStatusFreqValue>
+                                <StyledStatusFreqValue>{props.frequency}</StyledStatusFreqValue>
                             </StyledStatusItem>
                         </StyledStatusRowOther>
                         <StyledStatusRowOther>

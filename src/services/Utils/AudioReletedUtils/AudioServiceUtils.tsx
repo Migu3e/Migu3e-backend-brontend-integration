@@ -12,13 +12,12 @@ export const startAudioService = (
     onStop = stopCallback;
 };
 
-
 export const start = async (): Promise<void> => {
     try {
         const stream: MediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         audioContext = new (window.AudioContext);
 
-        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
 
         mediaRecorder.ondataavailable = (event: BlobEvent) => {
             if (event.data.size > 0) {
@@ -45,10 +44,10 @@ export const start = async (): Promise<void> => {
             onDataAvailable(audioData.buffer);
         };
 
-        mediaRecorder.start(10); // recording the full audio data every 10ms
+        mediaRecorder.start(1); // Record chunks every second
 
     } catch (error: unknown) {
-        console.error('error starting audio capture:', error instanceof Error ? error.message : String(error));
+        console.error('Error starting audio capture:', error instanceof Error ? error.message : String(error));
         throw error;
     }
 };
@@ -59,7 +58,6 @@ export const stop = (): void => {
     }
     if (audioContext) {
         audioContext.close();
-        clearAudioChunks();
         audioContext = null;
     }
     onStop();
@@ -67,10 +65,11 @@ export const stop = (): void => {
 
 export const getFullAudioArrayBuffer = async (): Promise<ArrayBuffer> => {
     if (audioChunks.length === 0) {
-        console.log('no audio chunks');
+        console.log('No audio chunks');
         return new ArrayBuffer(0);
     }
-    const fullAudioBlob: Blob = new Blob(audioChunks, {type: 'audio/webm'});
+    const fullAudioBlob: Blob = new Blob(audioChunks, { type: 'audio/webm' });
+    console.log(`Full audio blob size: ${fullAudioBlob.size} bytes`);
     return await fullAudioBlob.arrayBuffer();
 };
 

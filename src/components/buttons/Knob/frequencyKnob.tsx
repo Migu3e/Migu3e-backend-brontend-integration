@@ -5,7 +5,6 @@ import '../Knob/Knob.css';
 interface RotatingKnobProps {
     Frequency: number;
     setFrequency: (channel: number) => void;
-    sendChannelFrequency: (frequency: number) => void;
 }
 
 const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
@@ -37,7 +36,6 @@ const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
             prop.setFrequency(newChannel);
             const selectedFrequency = CHANNEL_FREQUENCIES.find((ch) => ch.channel === newChannel)?.frequency;
             if (selectedFrequency) {
-                prop.sendChannelFrequency(selectedFrequency);
             }
         };
 
