@@ -35,17 +35,9 @@ const ConnectionPage: React.FC = () => {
                 const data = await response.json();
                 console.log('Login successful:', data);
                 await connect(serverAddress, personalNumber); // Pass personalNumber as clientId
-                navigate('/main', {
-                    state: {
-                        clientId: personalNumber, // Use personalNumber as clientId
-                        type: data.type,
-                        channel: data.channel,
-                        frequency: data.frequency,
-                        volume: data.volume,
-                        minFrequency: data.minFrequency,
-                        maxFrequency: data.maxFrequency
-                    }
-                });
+                navigate('/main')
+                
+
             } else {
                 const errorData = await response.json().catch(() => ({ message: 'An error occurred' }));
                 setError(errorData.message || 'Login failed');
