@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../Knob/Knob.css';
 
 interface RotatingKnobProps {
     Frequency: number;
@@ -46,17 +45,17 @@ const RotatingKnob= (prop:RotatingKnobProps) => {
     };
 
     return (
-        <div className="rotating-knob-container">
+        <div className="flex flex-col items-center">
             <div
                 ref={knobRef}
-                className="rotating-knob"
+                className="w-[3.75rem] h-[3.75rem] rounded-full bg-[#454545] border-2 border-[#afafaf] relative cursor-pointer"
                 style={{transform: `rotate(${rotation}deg)`}}
                 onMouseDown={handleMouseDown}
             >
-                <div className="knob-indicator"/>
+                <div className="absolute top-[-0.1875rem] left-1/2 w-[0.125rem] h-[0.9375rem] bg-white -translate-x-1/2 border-r-[0.3125rem] border-transparent"/>
             </div>
-            <div className="channel-display">
-                <span className="channel-label">Frequency</span>
+            <div className="mt-1 text-sm text-white flex flex-col items-center">
+                <span className="text-xs text-gray-400">Frequency</span>
             </div>
         </div>
     );
