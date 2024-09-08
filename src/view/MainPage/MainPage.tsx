@@ -8,7 +8,7 @@ import VolumeKnob from '../../components/buttons/Knob/VolumeKnob';
 import OnOffSwitch from '../../components/buttons/onoff/OnOffSwitch';
 import StatusDisplay from '../../components/Display/StatusDisplay.tsx';
 import FrequencyKnob from '../../components/buttons/Knob/frequencyKnob.tsx';
-import { useWebSocketController } from '../../controller/useWebSocketController.tsx';
+import { useWebSocketContext } from '../../services/Context/WebSocketContext.tsx';
 import './MainPage.css';
 const MainPage = () => {
     const navigate = useNavigate();
@@ -30,7 +30,7 @@ const MainPage = () => {
         sendVolumeLevel,
         sendOnOffState,
         getSettings
-    } = useWebSocketController();
+    } = useWebSocketContext();
 
     const calculateFrequency = (channel: number, knob: number): number => {
         const channelStep = (maxFreq - minFreq) / 9;

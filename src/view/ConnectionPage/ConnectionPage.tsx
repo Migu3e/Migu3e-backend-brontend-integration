@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ConnectButton from '../../components/buttons/ConnectButton';
-import { useWebSocketController } from '../../controller/useWebSocketController.tsx';
+import { useWebSocketContext } from '../../services/Context/WebSocketContext.tsx';
 import './ConnectionPage.css';
 import RegisterButton from "../../components/buttons/RegisterPage.tsx";
 
 const ConnectionPage = () => {
     const navigate = useNavigate();
-    const { connect } = useWebSocketController();
+    const { connect } = useWebSocketContext();
     const [serverAddress, setServerAddress] = useState<string>('');
     const [personalNumber, setPersonalNumber] = useState<string>('');
     const [password, setPassword] = useState<string>('');
