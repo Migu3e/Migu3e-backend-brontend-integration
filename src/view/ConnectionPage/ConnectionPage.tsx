@@ -60,27 +60,9 @@ const ConnectionPage = () => {
                 </div>
                 <h1 className="text-white mb-[2rem] text-[2rem]">AudioPTTCLIENT</h1>
                 {error && <p className="error-message">{error}</p>}
-                <input
-                    type="text"
-                    value={serverAddress}
-                    onChange={(e) => setServerAddress(e.target.value)}
-                    placeholder="Enter server IP"
-                    className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300"
-                />
-                <input
-                    type="text"
-                    value={personalNumber}
-                    onChange={(e) => setPersonalNumber(e.target.value)}
-                    placeholder="Enter personal number"
-                    className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300"
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter password"
-                    className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300 "
-                />
+                <input type="text" value={serverAddress} onChange={(e) => setServerAddress(e.target.value)} placeholder="Enter server IP" className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300"/>
+                <input type="text" value={personalNumber} onChange={(e) => setPersonalNumber(e.target.value)} placeholder="Enter personal number" className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300"/>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300 "/>
                 <ConnectButton onClick={handleConnect} className="bg-[#1DB954] text-white border border-[#1DB954] rounded-full py-[0.875rem] px-[2rem] m-3 text-base font-bold w-full transition-colors duration-300 hover:bg-[#282828] hover:text-[#1DB954]"></ConnectButton>
                 <RegisterButton onClick={handleRegister} className="bg-[#CDFD02] text-white border border-[#CDFD02] rounded-full py-[0.875rem] px-[2rem] text-base font-bold w-full transition-colors duration-300 hover:bg-[#282828] hover:text-[#CDFD02]"/>
             </div>

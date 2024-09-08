@@ -10,6 +10,8 @@ import StatusDisplay from '../../components/Display/StatusDisplay.tsx';
 import FrequencyKnob from '../../components/buttons/Knob/frequencyKnob.tsx';
 import { useWebSocketContext } from '../../services/Context/WebSocketContext.tsx';
 import './MainPage.css';
+import {calculateFrequency, calculateChannelAndKnob} from "../../services/Utils/KnobUtils.tsx";
+
 const MainPage = () => {
     const navigate = useNavigate();
     const [isTransmitting, setIsTransmitting] = useState(false);
@@ -19,42 +21,7 @@ const MainPage = () => {
     const [frequencyKnob, setFrequencyKnob] = useState(1);
     const [minFreq, setMinFreq] = useState(30);
     const [maxFreq, setMaxFreq] = useState(500);
-
-    const {
-        clientId,
-        isConnected,
-        startTransmission,
-        stopTransmission,
-        disconnect,
-        sendChannelFrequency,
-        sendVolumeLevel,
-        sendOnOffState,
-        getSettings
-    } = useWebSocketContext();
-
-    const calculateFrequency = (channel: number, knob: number): number => {
-        const channelStep = (maxFreq - minFreq) / 9;
-        const channels : number[] = [];
-        for (let i = 0; i < 10; i++) {
-            const channelFreq = minFreq + channelStep * i;
-            channels.push(channelFreq);
-        }
-
-        const frequencies = [];
-        for (let channelIndex = 0; channelIndex < 9; channelIndex++) {
-            const currentChannelFreq = channels[channelIndex];
-            const nextChannelFreq = channels[channelIndex + 1];
-            const freqStep = (nextChannelFreq - currentChannelFreq) / 10;
-
-            for (let knobPosition = 0; knobPosition < 10; knobPosition++) {
-                const frequency = currentChannelFreq + freqStep * knobPosition;
-                frequencies.push(frequency);
-            }
-        }
-        const index = (channel - 1) * 10 + (knob - 1);
-        return frequencies[index];
-    };
-
+    const {clientId,isConnected,startTransmission,stopTransmission,disconnect,sendChannelFrequency,sendVolumeLevel,sendOnOffState,getSettings} = useWebSocketContext();
     useEffect(() => {
         const loadSettings = async () => {
             const settings = await getSettings();
@@ -64,13 +31,9 @@ const MainPage = () => {
                 setMinFreq(settings.minFrequency);
                 setMaxFreq(settings.maxFrequency);
                 // Reverse calculate the frequency knob position
-                const freq = settings.frequency;
-                const channelStep = (settings.maxFrequency - settings.minFrequency) / 9;
-                const channels = Array.from({ length: 10 }, (_, i) => settings.minFrequency + channelStep * i);
-                const channelIndex = channels.findIndex(c => c > freq) - 1;
-                const knobPosition = Math.round((freq - channels[channelIndex]) /
-                    ((channels[channelIndex + 1] - channels[channelIndex]) / 10)) + 1;
-                setFrequencyKnob(knobPosition);
+                const { channel, knob } = calculateChannelAndKnob(settings.frequency, settings.minFrequency, settings.maxFrequency);
+                setChannel(channel);
+                setFrequencyKnob(knob);
             }
         };
         loadSettings();
@@ -78,13 +41,13 @@ const MainPage = () => {
 
     const handleChannelChange = async (newChannel: number) => {
         setChannel(newChannel);
-        const frequency = calculateFrequency(newChannel, frequencyKnob);
+        const frequency = calculateFrequency(newChannel, frequencyKnob, minFreq, maxFreq);
         await sendChannelFrequency(newChannel, frequency);
     };
 
     const handleFrequencyKnobChange = async (newKnob: number) => {
         setFrequencyKnob(newKnob);
-        const frequency = calculateFrequency(channel, newKnob);
+        const frequency = calculateFrequency(channel, newKnob, minFreq, maxFreq);
         await sendChannelFrequency(channel, frequency);
     };
 
@@ -113,7 +76,7 @@ const MainPage = () => {
         setIsTransmitting(false);
     };
 
-    const currentFrequency = calculateFrequency(channel, frequencyKnob);
+    const currentFrequency = calculateFrequency(channel, frequencyKnob, minFreq, maxFreq);
 
     return (
         <div className="mt-[2.5rem] pb-[2.5rem]">
@@ -133,14 +96,8 @@ const MainPage = () => {
                     </div>
 
                     <h1 className="text-white text-[1.75rem] mb-[1.25rem] mt-2">AudioPTTCLIENT</h1>
-                    <StatusDisplay clientId={clientId || 'Error'} volume={volume} channel={channel}
-                                   frequency={currentFrequency} isOn={isOn}/>
-                    <AudioButton
-                        onMouseDown={handleMouseDown}
-                        onMouseUp={handleMouseUp}
-                        className={isOn ? `bg-[#c1bb00] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#1ed760] ${isTransmitting ? 'bg-[#E91429] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#ff1e3c] hover:text-[#6a0000]' : ''}` : 'bg-[#949494] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#404040] hover:text-[#b2b2b2]'}
-                        isOn={isOn}
-                    />
+                    <StatusDisplay clientId={clientId || 'Error'} volume={volume} channel={channel} frequency={currentFrequency} isOn={isOn}/>
+                    <AudioButton onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} className={isOn ? `bg-[#c1bb00] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#1ed760] ${isTransmitting ? 'bg-[#E91429] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#ff1e3c] hover:text-[#6a0000]' : ''}` : 'bg-[#949494] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#404040] hover:text-[#b2b2b2]'} isOn={isOn}/>
                     <ButtonGrid/>
                     <DisconnectButton
                         onClick={() => {
