@@ -9,43 +9,4 @@
 }
 
 @layer components {
-    .connection-page {
-        @apply flex justify-center items-center h-screen;
-    }
-
-    .connection-box {
-        @apply bg-[#282828] rounded-lg p-[2.5rem] w-[27.125rem] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center;
-    }
-
-    .connection-page__logo {
-        @apply w-[3.125rem] h-[3.125rem] mb-[1.25rem];
-    }
-
-    .connection-page__title {
-        @apply text-white mb-[2rem] text-[2rem];
-    }
-
-    .connection-page__button {
-        @apply bg-[#1DB954] text-white border border-[#1DB954] rounded-full py-[0.875rem] px-[2rem] m-3 text-base font-bold w-full transition-colors duration-300;
-    }
-
-    .connection-page__button_Login {
-        @apply bg-[#CDFD02] text-white border border-[#CDFD02] rounded-full py-[0.875rem] px-[2rem] text-base font-bold w-full transition-colors duration-300;
-    }
-
-    .connection-page__button:hover {
-        @apply bg-[#282828] text-[#1DB954];
-    }
-
-    .connection-page__button_Login:hover {
-        @apply bg-[#282828] text-[#CDFD02];
-    }
-
-    .connection-page__input {
-        @apply bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300;
-    }
-
-    .connection-page__input::placeholder {
-        @apply text-[#B3B3B3];
-    }
 }

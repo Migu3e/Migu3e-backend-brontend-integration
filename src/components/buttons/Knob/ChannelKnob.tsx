@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CHANNEL_FREQUENCIES } from '../../../models/ChannelFrequencies.tsx';
-import './Knob.css';
 
 interface RotatingKnobProps {
     channel: number;
     setChannel: (channel: number) => void;
 }
 
-const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
+const RotatingKnob = (prop:RotatingKnobProps) => {
     const [rotation, setRotation] = useState(0);
     const knobRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const newRotation = (prop.channel - 1) * (360 / CHANNEL_FREQUENCIES.length);
+        const newRotation = (prop.channel - 1) * (360 / 10);
         setRotation(newRotation);
     }, [prop.channel]);
 
@@ -30,14 +28,11 @@ const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
             let newRotation = angle * (180 / Math.PI) + 90;
             if (newRotation < 0) newRotation += 360;
 
-            const channelIndex = Math.round((newRotation / 360) * CHANNEL_FREQUENCIES.length);
-            const newChannel = (channelIndex % CHANNEL_FREQUENCIES.length) + 1;
+            const channelIndex = Math.round((newRotation / 360) * 10);
+            const newChannel = (channelIndex % 10) + 1;
 
             prop.setChannel(newChannel);
-            const selectedFrequency = CHANNEL_FREQUENCIES.find((ch) => ch.channel === newChannel)?.frequency;
-            if (selectedFrequency) {
-                prop.setChannel(newChannel);
-            }
+
         };
 
         const handleMouseUp = () => {
@@ -50,17 +45,18 @@ const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
     };
 
     return (
-        <div className="rotating-knob-container">
+        <div className="flex flex-col items-center">
             <div
                 ref={knobRef}
-                className="rotating-knob"
+                className="w-[3.75rem] h-[3.75rem] rounded-full bg-[#454545] border-2 border-[#afafaf] relative cursor-pointer"
                 style={{transform: `rotate(${rotation}deg)`}}
                 onMouseDown={handleMouseDown}
             >
-                <div className="knob-indicator"/>
+                <div
+                    className="absolute top-[-0.1875rem] left-1/2 w-[0.125rem] h-[0.9375rem] bg-white -translate-x-1/2 border-r-[0.3125rem] border-transparent"/>
             </div>
-            <div className="channel-display">
-                <span className="channel-label">Channel</span>
+            <div className="mt-1 text-sm text-white flex flex-col items-center">
+                <span className="text-xs text-gray-400">Channel</span>
             </div>
         </div>
     );
