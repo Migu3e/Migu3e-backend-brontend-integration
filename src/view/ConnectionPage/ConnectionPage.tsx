@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ConnectButton from '../../components/buttons/ConnectButton';
 import { useWebSocketController } from '../../controller/useWebSocketController.tsx';
 import './ConnectionPage.css';
 import RegisterButton from "../../components/buttons/RegisterPage.tsx";
 
-const ConnectionPage: React.FC = () => {
+const ConnectionPage = () => {
     const navigate = useNavigate();
     const { connect } = useWebSocketController();
     const [serverAddress, setServerAddress] = useState<string>('');

@@ -156,10 +156,6 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
         }
     };
 
-
-
-
-
     useEffect(() => {
         AudioService.startAudioService(sendAudioChunk, FullAudioService.handleTransmissionStop);
         FullAudioService.startFullAudioService(sendFullAudio);

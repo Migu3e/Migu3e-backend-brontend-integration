@@ -4,7 +4,7 @@ import ConnectButton from '../../components/buttons/ConnectButton';
 import LoginButton from "../../components/buttons/LoginButton.tsx";
 import './RegisterPage.css';
 
-const RegisterPage: React.FC = () => {
+const RegisterPage = () => {
     const navigate = useNavigate();
     const [serverAddress, setServerAddress] = useState<string>('');
     const [personalNumber, setPersonalNumber] = useState<string>('');
@@ -104,7 +104,7 @@ const RegisterPage: React.FC = () => {
                     <option value={3}>חייל האוויר</option>
                     <option value={4}>מג"ב</option>
                 </select>
-                <ConnectButton onClick={handleRegister} className="connection-page__button">Register</ConnectButton>
+                <ConnectButton onClick={handleRegister} className="connection-page__button"></ConnectButton>
                 <LoginButton onClick={handleLogin} className="connection-page__button_Login"/>
             </div>
         </div>

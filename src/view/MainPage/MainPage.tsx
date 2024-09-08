@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AudioButton from '../../components/buttons/AudioButton';
 import DisconnectButton from '../../components/buttons/DisconnectButton';
@@ -10,8 +10,7 @@ import StatusDisplay from '../../components/Display/StatusDisplay.tsx';
 import FrequencyKnob from '../../components/buttons/Knob/frequencyKnob.tsx';
 import { useWebSocketController } from '../../controller/useWebSocketController.tsx';
 import './MainPage.css';
-
-const MainPage: React.FC = () => {
+const MainPage = () => {
     const navigate = useNavigate();
     const [isTransmitting, setIsTransmitting] = useState(false);
     const [channel, setChannel] = useState(1);
@@ -33,21 +32,27 @@ const MainPage: React.FC = () => {
         getSettings
     } = useWebSocketController();
 
-    const FrequencyCalculator = useMemo(() => {
-        const channelStep = (maxFreq - minFreq) / 9;
-        const channels = Array.from({ length: 10 }, (_, i) => minFreq + channelStep * i);
-        const frequencies = channels.flatMap((channelFreq, index) => {
-            if (index === channels.length - 1) return [];
-            const nextChannelFreq = channels[index + 1];
-            const freqStep = (nextChannelFreq - channelFreq) / 10;
-            return Array.from({ length: 10 }, (_, i) => channelFreq + freqStep * i);
-        });
-        return { channels, frequencies };
-    }, [minFreq, maxFreq]);
-
     const calculateFrequency = (channel: number, knob: number): number => {
+        const channelStep = (maxFreq - minFreq) / 9;
+        const channels : number[] = [];
+        for (let i = 0; i < 10; i++) {
+            const channelFreq = minFreq + channelStep * i;
+            channels.push(channelFreq);
+        }
+
+        const frequencies = [];
+        for (let channelIndex = 0; channelIndex < 9; channelIndex++) {
+            const currentChannelFreq = channels[channelIndex];
+            const nextChannelFreq = channels[channelIndex + 1];
+            const freqStep = (nextChannelFreq - currentChannelFreq) / 10;
+
+            for (let knobPosition = 0; knobPosition < 10; knobPosition++) {
+                const frequency = currentChannelFreq + freqStep * knobPosition;
+                frequencies.push(frequency);
+            }
+        }
         const index = (channel - 1) * 10 + (knob - 1);
-        return FrequencyCalculator.frequencies[index];
+        return frequencies[index];
     };
 
     useEffect(() => {
@@ -60,14 +65,16 @@ const MainPage: React.FC = () => {
                 setMaxFreq(settings.maxFrequency);
                 // Reverse calculate the frequency knob position
                 const freq = settings.frequency;
-                const channelIndex = FrequencyCalculator.channels.findIndex(c => c > freq) - 1;
-                const knobPosition = Math.round((freq - FrequencyCalculator.channels[channelIndex]) /
-                    ((FrequencyCalculator.channels[channelIndex + 1] - FrequencyCalculator.channels[channelIndex]) / 10)) + 1;
+                const channelStep = (settings.maxFrequency - settings.minFrequency) / 9;
+                const channels = Array.from({ length: 10 }, (_, i) => settings.minFrequency + channelStep * i);
+                const channelIndex = channels.findIndex(c => c > freq) - 1;
+                const knobPosition = Math.round((freq - channels[channelIndex]) /
+                    ((channels[channelIndex + 1] - channels[channelIndex]) / 10)) + 1;
                 setFrequencyKnob(knobPosition);
             }
         };
         loadSettings();
-    }, [getSettings, FrequencyCalculator]);
+    }, [getSettings]);
 
     const handleChannelChange = async (newChannel: number) => {
         setChannel(newChannel);

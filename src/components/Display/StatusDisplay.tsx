@@ -1,4 +1,3 @@
-import React from 'react';
 import {
     StatusRow as StyledStatusRow,
     StatusRowOther as StyledStatusRowOther,
@@ -22,7 +21,7 @@ interface StatusDisplayProps {
     isOn: boolean;
 }
 
-const StatusDisplay: React.FC<StatusDisplayProps> = (props:StatusDisplayProps) => {
+const StatusDisplay = (props:StatusDisplayProps) => {
     const currentDate = new Date().toLocaleDateString();
 
     return (

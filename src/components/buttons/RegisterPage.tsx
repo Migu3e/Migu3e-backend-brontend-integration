@@ -1,11 +1,10 @@
-import React from 'react';
 
 interface RegisterButtonProps {
     onClick: () => void;
     className?: string;
 }
 
-const RegisterButton: React.FC<RegisterButtonProps> = (props:RegisterButtonProps) => {
+const RegisterButton = (props:RegisterButtonProps) => {
     return (
         <button onClick={props.onClick} className={props.className}>
             Register
