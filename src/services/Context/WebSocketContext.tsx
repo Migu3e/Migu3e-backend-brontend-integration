@@ -1,49 +1,59 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import * as AudioService from '../Utils/AudioReletedUtils/AudioServiceUtils.tsx';
-import * as FullAudioService from '../Utils/AudioReletedUtils/FullAudioMakerUtils.tsx';
-import { handleIncomingMessage, cleanupAudioContext } from '../Utils/AudioReletedUtils/AudioReceiverUtils.tsx';
-import { sendAudioChunk, sendFullAudio, setSocket } from '../Utils/AudioReletedUtils/AudioSenderUtils.tsx';
+import * as AudioService from '../Utils/AudioReletedUtils/AudioServiceUtils';
+import * as FullAudioService from '../Utils/AudioReletedUtils/FullAudioMakerUtils';
+import { handleIncomingMessage, cleanupAudioContext } from '../Utils/AudioReletedUtils/AudioReceiverUtils';
+import { sendAudioChunk, sendFullAudio, setSocket } from '../Utils/AudioReletedUtils/AudioSenderUtils';
 
 interface WebSocketContextType {
     socket: WebSocket | null;
     clientId: string | null;
     isConnected: boolean;
-    connect: (serverAddress: string) => Promise<void>;
+    connect: (serverAddress: string, clientId: string) => Promise<void>;
     disconnect: () => void;
-    startTransmission: (channel: number) => Promise<void>;
+    startTransmission: () => Promise<void>;
     stopTransmission: () => void;
-    sendChannelFrequency: (channel: number) => void;
-    sendVolumeLevel: (volume: number) => void;
-    sendOnOffState: (state: string) => void;
+    sendChannelFrequency: (channel: number, frequency: number) => Promise<void>;
+    sendVolumeLevel: (volume: number) => Promise<void>;
+    sendOnOffState: (state: boolean) => Promise<void>;
+    getSettings: () => Promise<ClientSettings | null>;
+}
+interface ClientSettings {
+    channel: number;
+    volume: number;
+    frequency: number;
+    minFrequency: number;
+    maxFrequency: number;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
-export const WebSocketControllerContext: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [socket, setWebSocket] = useState<WebSocket | null>(null);
     const [clientId, setClientId] = useState<string | null>(null);
+    const [serverAddress, setServerAddress] = useState<string>('');
 
-    useEffect(() => {
-        return () => {
-            if (socket) {
-                socket.close();
-            }
-        };
-    }, []);
-
-    const connect = async (serverAddress: string): Promise<void> => {
+    const connect = async (address: string, clientId: string): Promise<void> => {
         return new Promise((resolve, reject) => {
-            const newSocket = new WebSocket(`ws://${serverAddress}:8081`);
+            const newSocket = new WebSocket(`ws://${address}:8081`);
             newSocket.onopen = () => {
-                console.log('Connected to server');
+                console.log('WebSocket connected, sending client ID');
+                newSocket.send(clientId);
                 setWebSocket(newSocket);
                 setSocket(newSocket);
+                setServerAddress(address);
+                setClientId(clientId);
             };
             newSocket.onmessage = (event) => {
+                console.log('WebSocket message received:', event.data);
                 if (typeof event.data === 'string') {
-                    setClientId(event.data);
-                    console.log('Received client ID:', event.data);
-                    resolve();
+                    if (event.data === 'Connected') {
+                        console.log('Connection confirmed by server');
+                        resolve();
+                    }
+
+                    else {
+                        handleIncomingMessage(event);
+                    }
                 } else {
                     handleIncomingMessage(event);
                 }
@@ -80,33 +90,72 @@ export const WebSocketControllerContext: React.FC<{ children: ReactNode }> = ({ 
         AudioService.stop();
         AudioService.clearAudioChunks();
     };
-    const sendChannelFrequency = (channel: number): void => {
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            const message : string = `FRE|${channel.toFixed(4)}`; // Combine ID string with formatted frequency
-            console.log(`Sending channel frequency: ${message}`);
-            socket.send(message);
-        } else {
-            console.warn('Failed to send channel frequency: Socket not connected or ready');
+
+    const sendChannelFrequency = async (channel: number, frequency: number): Promise<void> => {
+        if (!clientId) throw new Error('Client ID not set');
+        const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `channel=${channel}&frequency=${frequency.toFixed(4)}`,
+        });
+        if (!response.ok) throw new Error('Failed to update channel and frequency');
+    };
+
+
+    const sendVolumeLevel = async (volume: number): Promise<void> => {
+        if (!clientId) throw new Error('Client ID not set');
+        try {
+            const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `volume=${volume}`,
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to update volume: ${response.status} ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error updating volume:', error);
+            throw error;
         }
     };
-    const sendVolumeLevel = (volume: number): void => {
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            const message : string = `VUL|${volume}`;
-            console.log(`Sending volume level: ${message}`);
-            socket.send(message);
-        } else {
-            console.warn('Failed to send volume level: Socket not connected or ready');
+
+    const sendOnOffState = async (state: boolean): Promise<void> => {
+        if (!clientId) throw new Error('Client ID not set');
+        try {
+            const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `onoff=${state}`,
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to update on/off state: ${response.status} ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Error updating on/off state:', error);
+            throw error;
         }
     };
-    const sendOnOffState = (state: string): void => {
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            const message: string = `ONF|${state}`;
-            console.log(`Sending on/off state: ${message}`);
-            socket.send(message);
-        } else {
-            console.warn('Failed to send on/off state: Socket not connected or ready');
+
+    const getSettings = async (): Promise<ClientSettings | null> => {
+        if (!clientId) return null;
+
+        try {
+            const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`);
+            if (!response.ok) {
+                console.error('Failed to fetch settings:', response.status, response.statusText);
+                return null;
+            }
+
+            const responseBody = await response.json();
+            return responseBody as ClientSettings;
+        } catch (error) {
+            console.error('Error fetching settings:', error);
+            return null;
         }
     };
+
     useEffect(() => {
         AudioService.startAudioService(sendAudioChunk, FullAudioService.handleTransmissionStop);
         FullAudioService.startFullAudioService(sendFullAudio);
@@ -125,6 +174,7 @@ export const WebSocketControllerContext: React.FC<{ children: ReactNode }> = ({ 
                 sendChannelFrequency,
                 sendVolumeLevel,
                 sendOnOffState,
+                getSettings,
             }}
         >
             {children}
@@ -134,10 +184,8 @@ export const WebSocketControllerContext: React.FC<{ children: ReactNode }> = ({ 
 
 export const useWebSocketContext = (): WebSocketContextType => {
     const context = useContext(WebSocketContext);
-    if (!context)
-    {
+    if (!context) {
         throw new Error('useWebSocket must be used within a WebSocketProvider');
     }
     return context;
-
 };

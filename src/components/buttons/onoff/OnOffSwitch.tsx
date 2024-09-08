@@ -1,4 +1,3 @@
-import React from 'react';
 import './OnOffSwitch.css';
 
 interface OnOffSwitchProps {
@@ -6,7 +5,7 @@ interface OnOffSwitchProps {
     onToggle: () => void;
 }
 
-const OnOffSwitch: React.FC<OnOffSwitchProps> = (props:OnOffSwitchProps) => {
+const OnOffSwitch = (props:OnOffSwitchProps) => {
     return (
 
         <div>

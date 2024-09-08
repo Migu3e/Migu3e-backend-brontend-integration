@@ -1,15 +1,17 @@
 
-interface ConnectButtonProps {
+interface RegisterButtonProps {
     onClick: () => void;
     className?: string;
 }
 
-const ConnectButton = (props:ConnectButtonProps) => {
+const RegisterButton = (props:RegisterButtonProps) => {
     return (
         <button onClick={props.onClick} className={props.className}>
-            Connect
+            Register
         </button>
     );
 };
 
-export default ConnectButton;
+export default RegisterButton;
+
+

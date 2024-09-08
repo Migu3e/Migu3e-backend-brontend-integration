@@ -1,15 +1,15 @@
 
-interface ConnectButtonProps {
+interface LogintButtonProps {
     onClick: () => void;
     className?: string;
 }
 
-const ConnectButton = (props:ConnectButtonProps) => {
+const LoginButton = (props:LogintButtonProps) => {
     return (
         <button onClick={props.onClick} className={props.className}>
-            Connect
+            Login
         </button>
     );
 };
 
-export default ConnectButton;
+export default LoginButton;

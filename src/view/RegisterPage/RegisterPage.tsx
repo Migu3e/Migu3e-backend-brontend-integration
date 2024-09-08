@@ -1,26 +1,31 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ConnectButton from '../../components/buttons/ConnectButton';
-import { useWebSocketController } from '../../controller/useWebSocketController.tsx';
-import './ConnectionPage.css';
-import RegisterButton from "../../components/buttons/RegisterPage.tsx";
+import LoginButton from "../../components/buttons/LoginButton.tsx";
+import './RegisterPage.css';
 
-const ConnectionPage = () => {
+const RegisterPage = () => {
     const navigate = useNavigate();
-    const { connect } = useWebSocketController();
     const [serverAddress, setServerAddress] = useState<string>('');
     const [personalNumber, setPersonalNumber] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [passwordAgain, setPasswordAgain] = useState<string>('');
+    const [selectedOption, setSelectedOption] = useState<number>(1);
     const [error, setError] = useState<string>('');
 
-    const handleConnect = async () => {
-        if (!serverAddress || !personalNumber || !password) {
+    const handleRegister = async () => {
+        // Basic validation
+        if (!serverAddress || !personalNumber || !password || !passwordAgain) {
             setError('All fields are required');
+            return;
+        }
+        if (password !== passwordAgain) {
+            setError('Passwords do not match');
             return;
         }
 
         try {
-            const response = await fetch(`http://${serverAddress}:5000/api/login`, {
+            const response = await fetch(`http://${serverAddress}:5000/api/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -28,28 +33,30 @@ const ConnectionPage = () => {
                 body: JSON.stringify({
                     ClientID: personalNumber,
                     Password: password,
+                    Type: selectedOption
                 }),
             });
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Login successful:', data);
-                await connect(serverAddress, personalNumber); // Pass personalNumber as clientId
-                navigate('/main')
-                
-
+                console.log('Registration successful:', data);
+                navigate('/'); // Redirect to login page after successful registration
             } else {
-                const errorData = await response.json().catch(() => ({ message: 'An error occurred' }));
-                setError(errorData.message || 'Login failed');
+                const errorData = await response.json();
+                setError(errorData.message || 'Registration failed');
             }
         } catch (error) {
-            console.error('Login error:', error);
-            setError('An error occurred during login. Please check the server address and try again.');
+            console.error('Registration error:', error);
+            setError('An error occurred during registration');
         }
     };
 
-    const handleRegister = () => {
-        navigate('/register');
+    const handleLogin = () => {
+        navigate('/');
+    };
+
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedOption(Number(e.target.value));
     };
 
     return (
@@ -81,11 +88,27 @@ const ConnectionPage = () => {
                     placeholder="Enter password"
                     className="connection-page__input"
                 />
-                <ConnectButton onClick={handleConnect} className="connection-page__button"></ConnectButton>
-                <RegisterButton onClick={handleRegister} className="connection-page__button_Login"/>
+                <input
+                    type="password"
+                    value={passwordAgain}
+                    onChange={(e) => setPasswordAgain(e.target.value)}
+                    placeholder="Enter password again"
+                    className="connection-page__input"
+                />
+                <select
+                    value={selectedOption}
+                    onChange={handleSelectChange}
+                    className="connection-page__input_select">
+                    <option value={1}>חייל היבשה</option>
+                    <option value={2}>חייל הים</option>
+                    <option value={3}>חייל האוויר</option>
+                    <option value={4}>מג"ב</option>
+                </select>
+                <ConnectButton onClick={handleRegister} className="connection-page__button"></ConnectButton>
+                <LoginButton onClick={handleLogin} className="connection-page__button_Login"/>
             </div>
         </div>
     );
 };
 
-export default ConnectionPage;
+export default RegisterPage;

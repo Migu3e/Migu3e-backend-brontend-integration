@@ -1,4 +1,3 @@
-import React from 'react';
 
 interface AudioButtonProps {
     onMouseDown?: () => void;
@@ -7,7 +6,7 @@ interface AudioButtonProps {
     isOn?: boolean
 }
 
-const AudioButton: React.FC<AudioButtonProps> = (props:AudioButtonProps) => {
+const AudioButton = (props:AudioButtonProps) => {
     return (
         <>
             {props.isOn ? (

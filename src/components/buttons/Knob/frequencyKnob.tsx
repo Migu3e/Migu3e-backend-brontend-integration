@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CHANNEL_FREQUENCIES } from '../../../models/ChannelFrequencies.tsx';
-import './Knob.css';
+import { CHANNEL_FREQUENCIES } from '../../../models/ChannelFrequencies';
+import '../Knob/Knob.css';
 
 interface RotatingKnobProps {
-    channel: number;
-    setChannel: (channel: number) => void;
+    Frequency: number;
+    setFrequency: (channel: number) => void;
 }
 
 const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
@@ -12,9 +12,9 @@ const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
     const knobRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const newRotation = (prop.channel - 1) * (360 / CHANNEL_FREQUENCIES.length);
+        const newRotation = (prop.Frequency - 1) * (360 / CHANNEL_FREQUENCIES.length);
         setRotation(newRotation);
-    }, [prop.channel]);
+    }, [prop.Frequency]);
 
     const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -33,10 +33,9 @@ const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
             const channelIndex = Math.round((newRotation / 360) * CHANNEL_FREQUENCIES.length);
             const newChannel = (channelIndex % CHANNEL_FREQUENCIES.length) + 1;
 
-            prop.setChannel(newChannel);
+            prop.setFrequency(newChannel);
             const selectedFrequency = CHANNEL_FREQUENCIES.find((ch) => ch.channel === newChannel)?.frequency;
             if (selectedFrequency) {
-                prop.setChannel(newChannel);
             }
         };
 
@@ -60,7 +59,7 @@ const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
                 <div className="knob-indicator"/>
             </div>
             <div className="channel-display">
-                <span className="channel-label">Channel</span>
+                <span className="channel-label">Frequency</span>
             </div>
         </div>
     );
