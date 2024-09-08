@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AudioButton from '../../components/buttons/AudioButton';
 import DisconnectButton from '../../components/buttons/DisconnectButton';
@@ -116,9 +116,9 @@ const MainPage = () => {
     const currentFrequency = calculateFrequency(channel, frequencyKnob);
 
     return (
-        <div className="main">
-            <div className="main-page">
-                <div className="main-box">
+        <div className="mt-[2.5rem] pb-[2.5rem]">
+            <div className="flex justify-center items-center mt-[1.25rem]">
+                <div className="bg-[#282828] rounded-lg p-[2.5rem] w-[22.775rem] h-[52.0rem] shadow-[0_4px_60px_rgba(0,0,0,0.5)] text-center flex flex-col items-center relative">
                     <div className="absolute top-4 right-4">
                         <ChannelKnob channel={channel} setChannel={handleChannelChange}/>
                     </div>
@@ -132,13 +132,13 @@ const MainPage = () => {
                         <VolumeKnob volume={volume} setVolume={handleVolumeChange}/>
                     </div>
 
-                    <h1 className="main-page__title mt-2">AudioPTTCLIENT</h1>
+                    <h1 className="text-white text-[1.75rem] mb-[1.25rem] mt-2">AudioPTTCLIENT</h1>
                     <StatusDisplay clientId={clientId || 'Error'} volume={volume} channel={channel}
                                    frequency={currentFrequency} isOn={isOn}/>
                     <AudioButton
                         onMouseDown={handleMouseDown}
                         onMouseUp={handleMouseUp}
-                        className={isOn ? `main-page__button ${isTransmitting ? 'main-page__button--transmitting' : ''}` : 'main-page-button-off'}
+                        className={isOn ? `bg-[#c1bb00] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#1ed760] ${isTransmitting ? 'bg-[#E91429] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#ff1e3c] hover:text-[#6a0000]' : ''}` : 'bg-[#949494] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#404040] hover:text-[#b2b2b2]'}
                         isOn={isOn}
                     />
                     <ButtonGrid/>
@@ -147,9 +147,9 @@ const MainPage = () => {
                             disconnect();
                             navigate('/');
                         }}
-                        className="main-page-button-disconnect"
+                        className="bg-[#535353] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#6a0000] hover:text-black"
                     />
-                </div>
+            </div>
             </div>
         </div>
     );
