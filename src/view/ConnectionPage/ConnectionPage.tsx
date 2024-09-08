@@ -34,7 +34,7 @@ const ConnectionPage = () => {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Login successful:', data);
-                await connect(serverAddress, personalNumber); // Pass personalNumber as clientId
+                await connect(serverAddress, personalNumber); // personalNumber is clientId
                 navigate('/main')
                 
 

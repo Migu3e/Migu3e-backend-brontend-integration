@@ -1,8 +1,6 @@
-import React from 'react';
-import './ButtonGrid.css';
 import Button from './AllButton.tsx';
 
-const ControlPanel: React.FC = () => (
+const ControlPanel =  () => (
     <div className="bg-[#282828] pt-4 pb-2 inline-block rounded-md">
         <div className="grid grid-cols-4 gap-2 mb-2">
             <Button label="LITE" />

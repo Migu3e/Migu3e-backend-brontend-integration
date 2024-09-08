@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CHANNEL_FREQUENCIES } from '../../../models/ChannelFrequencies';
 import '../Knob/Knob.css';
 
 interface RotatingKnobProps {
@@ -7,12 +6,12 @@ interface RotatingKnobProps {
     setFrequency: (channel: number) => void;
 }
 
-const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
+const RotatingKnob= (prop:RotatingKnobProps) => {
     const [rotation, setRotation] = useState(0);
     const knobRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const newRotation = (prop.Frequency - 1) * (360 / CHANNEL_FREQUENCIES.length);
+        const newRotation = (prop.Frequency - 1) * (360 / 10);
         setRotation(newRotation);
     }, [prop.Frequency]);
 
@@ -30,13 +29,11 @@ const RotatingKnob: React.FC<RotatingKnobProps> = (prop:RotatingKnobProps) => {
             let newRotation = angle * (180 / Math.PI) + 90;
             if (newRotation < 0) newRotation += 360;
 
-            const channelIndex = Math.round((newRotation / 360) * CHANNEL_FREQUENCIES.length);
-            const newChannel = (channelIndex % CHANNEL_FREQUENCIES.length) + 1;
+            const channelIndex = Math.round((newRotation / 360) * 10);
+            const newChannel = (channelIndex % 10) + 1;
 
             prop.setFrequency(newChannel);
-            const selectedFrequency = CHANNEL_FREQUENCIES.find((ch) => ch.channel === newChannel)?.frequency;
-            if (selectedFrequency) {
-            }
+
         };
 
         const handleMouseUp = () => {

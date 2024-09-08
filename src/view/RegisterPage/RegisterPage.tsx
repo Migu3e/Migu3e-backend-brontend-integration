@@ -14,7 +14,6 @@ const RegisterPage = () => {
     const [error, setError] = useState<string>('');
 
     const handleRegister = async () => {
-        // Basic validation
         if (!serverAddress || !personalNumber || !password || !passwordAgain) {
             setError('All fields are required');
             return;
@@ -38,16 +37,14 @@ const RegisterPage = () => {
             });
 
             if (response.ok) {
-                const data = await response.json();
-                console.log('Registration successful:', data);
-                navigate('/'); // Redirect to login page after successful registration
+                navigate('/'); // nabigate to login page after successful registration
             } else {
                 const errorData = await response.json();
                 setError(errorData.message || 'Registration failed');
             }
         } catch (error) {
-            console.error('Registration error:', error);
-            setError('An error occurred during registration');
+            console.error('register error:', error);
+            setError('error occurred during registration');
         }
     };
 
