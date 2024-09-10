@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ConnectButton from '../../components/buttons/ConnectButton';
 import { useWebSocketContext } from '../../services/Context/WebSocketContext.tsx';
+import axios from 'axios';
 import './ConnectionPage.css';
 import RegisterButton from "../../components/buttons/RegisterPage.tsx";
 
@@ -20,31 +21,21 @@ const ConnectionPage = () => {
         }
 
         try {
-            const response = await fetch(`http://${serverAddress}:5000/api/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ClientID: personalNumber,
-                    Password: password,
-                }),
+            const response = await axios.post(`http://${serverAddress}:5000/api/login`, {
+                ClientID: personalNumber,
+                Password: password,
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Login successful:', data);
-                await connect(serverAddress, personalNumber); // personalNumber is clientId
-                navigate('/main')
-                
-
-            } else {
-                const errorData = await response.json().catch(() => ({ message: 'An error occurred' }));
-                setError(errorData.message || 'Login failed');
-            }
+            console.log('Login successful:', response.data);
+            await connect(serverAddress, personalNumber); // personalNumber is clientId
+            navigate('/main');
         } catch (error) {
             console.error('Login error:', error);
-            setError('An error occurred during login. Please check the server address and try again.');
+            if (axios.isAxiosError(error)) {
+                setError(error.response?.data?.message || 'Login failed');
+            } else {
+                setError('An error occurred during login. Please check the server address and try again.');
+            }
         }
     };
 

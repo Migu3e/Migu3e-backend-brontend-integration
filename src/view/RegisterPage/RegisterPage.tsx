@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ConnectButton from '../../components/buttons/ConnectButton';
 import LoginButton from "../../components/buttons/LoginButton.tsx";
@@ -25,23 +26,16 @@ const RegisterPage = () => {
         }
 
         try {
-            const response = await fetch(`http://${serverAddress}:5000/api/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ClientID: personalNumber,
-                    Password: password,
-                    Type: selectedOption
-                }),
+            const response = await axios.post(`http://${serverAddress}:5000/api/register`, {
+                ClientID: personalNumber,
+                Password: password,
+                Type: selectedOption
             });
 
-            if (response.ok) {
-                navigate('/'); // nabigate to login page after successful registration
+            if (response.status === 200) {
+                navigate('/'); // navigate to login page after successful registration
             } else {
-                const errorData = await response.json();
-                setError(errorData.message || 'Registration failed');
+                setError(response.data.message || 'Registration failed');
             }
         } catch (error) {
             console.error('register error:', error);

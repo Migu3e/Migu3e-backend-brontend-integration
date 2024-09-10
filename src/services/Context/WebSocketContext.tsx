@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import * as AudioService from '../Utils/AudioReletedUtils/AudioServiceUtils';
+import axios from 'axios';
 import * as FullAudioService from '../Utils/AudioReletedUtils/FullAudioMakerUtils';
 import { handleIncomingMessage, cleanupAudioContext } from '../Utils/AudioReletedUtils/AudioReceiverUtils';
 import { sendAudioChunk, sendFullAudio, setSocket } from '../Utils/AudioReletedUtils/AudioSenderUtils';
@@ -93,47 +94,57 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     const sendChannelFrequency = async (channel: number, frequency: number): Promise<void> => {
         if (!clientId) throw new Error('Client ID not set');
-        const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `channel=${channel}&frequency=${frequency.toFixed(4)}`,
-        });
-        if (!response.ok) throw new Error('Failed to update channel and frequency');
+        try {
+            await axios.put(`http://${serverAddress}:5000/api/client/${clientId}/settings`,
+                `channel=${channel}&frequency=${frequency.toFixed(4)}`,
+                {
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                }
+            );
+        } catch (error) {
+            throw new Error('Failed to update channel and frequency');
+        }
     };
-
 
     const sendVolumeLevel = async (volume: number): Promise<void> => {
         if (!clientId) throw new Error('Client ID not set');
-        try {
-            const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `volume=${volume}`,
-            });
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Failed to update volume: ${response.status} ${errorText}`);
-            }
-        } catch (error) {
+        try
+        {
+            await axios.put(`http://${serverAddress}:5000/api/client/${clientId}/settings`,
+                `volume=${volume}`,
+                {
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                }
+            );
+        }
+        catch (error)
+        {
             console.error('Error updating volume:', error);
+            if (axios.isAxiosError(error))
+            {
+                throw new Error(`Failed to update volume: ${error.response?.status} ${error.response?.data}`);
+            }
             throw error;
         }
     };
 
     const sendOnOffState = async (state: boolean): Promise<void> => {
         if (!clientId) throw new Error('Client ID not set');
-        try {
-            const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `onoff=${state}`,
-            });
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Failed to update on/off state: ${response.status} ${errorText}`);
-            }
-        } catch (error) {
+        try
+        {
+            await axios.put(`http://${serverAddress}:5000/api/client/${clientId}/settings`,
+                `onoff=${state}`,
+                {
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                }
+            );
+        }
+        catch (error)
+        {
             console.error('Error updating on/off state:', error);
+            if (axios.isAxiosError(error)) {
+                throw new Error(`Failed to update on/off state: ${error.response?.status} ${error.response?.data}`);
+            }
             throw error;
         }
     };
@@ -141,16 +152,13 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
     const getSettings = async (): Promise<ClientSettings | null> => {
         if (!clientId) return null;
 
-        try {
-            const response = await fetch(`http://${serverAddress}:5000/api/client/${clientId}/settings`);
-            if (!response.ok) {
-                console.error('Failed to fetch settings:', response.status, response.statusText);
-                return null;
-            }
-
-            const responseBody = await response.json();
-            return responseBody as ClientSettings;
-        } catch (error) {
+        try
+        {
+            const response = await axios.get(`http://${serverAddress}:5000/api/client/${clientId}/settings`);
+            return response.data as ClientSettings;
+        }
+        catch (error)
+        {
             console.error('Error fetching settings:', error);
             return null;
         }
