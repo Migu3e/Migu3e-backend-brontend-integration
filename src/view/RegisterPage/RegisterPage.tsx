@@ -17,7 +17,7 @@ const RegisterPage = () => {
 
     const handleRegister = async () => {
         if (!serverAddress || !personalNumber || !password || !passwordAgain) {
-            setError('All fields are required');
+            setError('All fields are needed');
             return;
         }
         if (password !== passwordAgain) {
@@ -25,21 +25,17 @@ const RegisterPage = () => {
             return;
         }
 
-        try {
-            const response = await axios.post(`http://${serverAddress}:5000/api/register`, {
-                ClientID: personalNumber,
-                Password: password,
-                Type: selectedOption
-            });
+        const response = await axios.post(`http://${serverAddress}:5000/api/register`, {
+            ClientID: personalNumber,
+            Password: password,
+            Type: selectedOption
+        });
 
-            if (response.status === 200) {
-                navigate('/'); // navigate to login page after successful registration
-            } else {
-                setError(response.data.message || 'Registration failed');
-            }
-        } catch (error) {
-            console.error('register error:', error);
-            setError('error occurred during registration');
+        if (response.status === 200) {
+            navigate('/');
+        }
+        else {
+            setError(response.data.message || 'register error');
         }
     };
 
@@ -47,7 +43,7 @@ const RegisterPage = () => {
         navigate('/');
     };
 
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleSelectChange = (e) => {
         setSelectedOption(Number(e.target.value));
     };
 
@@ -58,7 +54,7 @@ const RegisterPage = () => {
                     <img src="/vite.svg" alt="Logo" className="w-[3.125rem] h-[3.125rem] mb-[1.25rem]"/>
                 </div>
                 <h1 className="text-white mb-[2rem] text-[2rem]">AudioPTTCLIENT</h1>
-                {error && <p className="error-message">{error}</p>}
+                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
                 <input type="text" value={serverAddress} onChange={(e) => setServerAddress(e.target.value)} placeholder="Enter server IP" className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300"/>
                 <input type="text" value={personalNumber} onChange={(e) => setPersonalNumber(e.target.value)} placeholder="Enter personal number" className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300"/>
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300"/>

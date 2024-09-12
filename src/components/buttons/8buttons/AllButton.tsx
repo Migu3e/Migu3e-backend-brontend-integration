@@ -18,5 +18,4 @@ const Button= (prop:ButtonProps) => (
         {prop.children}
     </button>
 );
-// can do all, but i want to keep it so it will do nothing for now
 export default Button;

@@ -21,21 +21,18 @@ const ConnectionPage = () => {
         }
 
         try {
-            const response = await axios.post(`http://${serverAddress}:5000/api/login`, {
+            const response = await axios.post(`http://${serverAddress}:5000/api/login`,
+                {
                 ClientID: personalNumber,
                 Password: password,
             });
 
-            console.log('Login successful:', response.data);
-            await connect(serverAddress, personalNumber); // personalNumber is clientId
+            console.log('login worked:', response.data);
+            await connect(serverAddress, personalNumber);
             navigate('/main');
         } catch (error) {
-            console.error('Login error:', error);
-            if (axios.isAxiosError(error)) {
-                setError(error.response?.data?.message || 'Login failed');
-            } else {
-                setError('An error occurred during login. Please check the server address and try again.');
-            }
+            console.error('login error:', error);
+            setError('l;ogin failed.');
         }
     };
 
@@ -50,11 +47,11 @@ const ConnectionPage = () => {
                     <img src="/vite.svg" alt="Logo" className="w-[3.125rem] h-[3.125rem] mb-[1.25rem]"/>
                 </div>
                 <h1 className="text-white mb-[2rem] text-[2rem]">AudioPTTCLIENT</h1>
-                {error && <p className="error-message">{error}</p>}
+                {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
                 <input type="text" value={serverAddress} onChange={(e) => setServerAddress(e.target.value)} placeholder="Enter server IP" className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300"/>
                 <input type="text" value={personalNumber} onChange={(e) => setPersonalNumber(e.target.value)} placeholder="Enter personal number" className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300"/>
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter password" className="bg-[#3E3E3E] text-white border-2 border-[#535353] rounded-full py-[0.75rem] px-[1.5rem] text-base w-full mb-[1.5rem] focus:outline-none focus:border-[#1DB954] transition-colors duration-300 "/>
-                <ConnectButton onClick={handleConnect} className="bg-[#1DB954] text-white border border-[#1DB954] rounded-full py-[0.875rem] px-[2rem] m-3 text-base font-bold w-full transition-colors duration-300 hover:bg-[#282828] hover:text-[#1DB954]"></ConnectButton>
+                <ConnectButton onClick={handleConnect} className="bg-[#1DB954] text-white border border-[#1DB954] rounded-full py-[0.875rem] px-[2rem] m-3 text-base font-bold w-full transition-colors duration-300 hover:bg-[#282828] hover:text-[#1DB954]"/>
                 <RegisterButton onClick={handleRegister} className="bg-[#CDFD02] text-white border border-[#CDFD02] rounded-full py-[0.875rem] px-[2rem] text-base font-bold w-full transition-colors duration-300 hover:bg-[#282828] hover:text-[#CDFD02]"/>
             </div>
         </div>

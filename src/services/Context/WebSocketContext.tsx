@@ -92,76 +92,36 @@ export const WebSocketProvider: React.FC<{ children: ReactNode }> = ({ children 
         AudioService.clearAudioChunks();
     };
 
-    const sendChannelFrequency = async (channel: number, frequency: number): Promise<void> => {
+    const sendChannelFrequency = async (channel: number, frequency: number)=>
+    {
         if (!clientId) throw new Error('Client ID not set');
-        try {
-            await axios.put(`http://${serverAddress}:5000/api/client/${clientId}/settings`,
-                `channel=${channel}&frequency=${frequency.toFixed(4)}`,
-                {
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                }
-            );
-        } catch (error) {
-            throw new Error('Failed to update channel and frequency');
-        }
+        await axios.put(`http://${serverAddress}:5000/api/client/${clientId}/settings`,
+            `channel=${channel}&frequency=${frequency.toFixed(4)}`
+        );
+
     };
 
-    const sendVolumeLevel = async (volume: number): Promise<void> => {
+    const sendVolumeLevel = async (volume: number)=>
+    {
         if (!clientId) throw new Error('Client ID not set');
-        try
-        {
-            await axios.put(`http://${serverAddress}:5000/api/client/${clientId}/settings`,
-                `volume=${volume}`,
-                {
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                }
-            );
-        }
-        catch (error)
-        {
-            console.error('Error updating volume:', error);
-            if (axios.isAxiosError(error))
-            {
-                throw new Error(`Failed to update volume: ${error.response?.status} ${error.response?.data}`);
-            }
-            throw error;
-        }
+        await axios.put(`http://${serverAddress}:5000/api/client/${clientId}/settings`,
+            `volume=${volume}`
+        );
     };
 
-    const sendOnOffState = async (state: boolean): Promise<void> => {
+    const sendOnOffState = async (state: boolean)=>
+    {
         if (!clientId) throw new Error('Client ID not set');
-        try
-        {
-            await axios.put(`http://${serverAddress}:5000/api/client/${clientId}/settings`,
-                `onoff=${state}`,
-                {
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                }
-            );
-        }
-        catch (error)
-        {
-            console.error('Error updating on/off state:', error);
-            if (axios.isAxiosError(error)) {
-                throw new Error(`Failed to update on/off state: ${error.response?.status} ${error.response?.data}`);
-            }
-            throw error;
-        }
+        await axios.put(`http://${serverAddress}:5000/api/client/${clientId}/settings`,
+            `onoff=${state}`
+        );
     };
 
-    const getSettings = async (): Promise<ClientSettings | null> => {
+    const getSettings = async () => {
         if (!clientId) return null;
-
-        try
-        {
-            const response = await axios.get(`http://${serverAddress}:5000/api/client/${clientId}/settings`);
-            return response.data as ClientSettings;
-        }
-        catch (error)
-        {
-            console.error('Error fetching settings:', error);
-            return null;
-        }
+        const response = await axios.get(`http://${serverAddress}:5000/api/client/${clientId}/settings`);
+        return response.data as ClientSettings;
+        //get the client channel,volume, freuqsny, minFreq, maxFreq.
     };
 
     useEffect(() => {

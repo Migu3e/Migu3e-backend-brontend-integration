@@ -94,18 +94,11 @@ const MainPage = () => {
                     <div className="absolute top-4 left-4">
                         <VolumeKnob volume={volume} setVolume={handleVolumeChange}/>
                     </div>
-
                     <h1 className="text-white text-[1.75rem] mb-[1.25rem] mt-2">AudioPTTCLIENT</h1>
                     <StatusDisplay clientId={clientId || 'Error'} volume={volume} channel={channel} frequency={currentFrequency} isOn={isOn}/>
                     <AudioButton onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} className={isOn ? `bg-[#c1bb00] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#1ed760] ${isTransmitting ? 'bg-[#E91429] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#ff1e3c] hover:text-[#6a0000]' : ''}` : 'bg-[#949494] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#404040] hover:text-[#b2b2b2]'} isOn={isOn}/>
                     <ButtonGrid/>
-                    <DisconnectButton
-                        onClick={() => {
-                            disconnect();
-                            navigate('/');
-                        }}
-                        className="bg-[#535353] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#6a0000] hover:text-black"
-                    />
+                    <DisconnectButton onClick={() => {disconnect();navigate('/');}} className="bg-[#535353] text-white border-none rounded-[31.25rem] py-[0.8125rem] text-base font-bold cursor-pointer w-full transition-colors duration-300 hover:bg-[#6a0000] hover:text-black"/>
             </div>
             </div>
         </div>

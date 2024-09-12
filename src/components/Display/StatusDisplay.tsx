@@ -58,7 +58,7 @@ const StatusDisplay = (props:StatusDisplayProps) => {
                     </StyledTopRow>
                 </StyledDisplayOn>
             ) : (
-                <StyledDisplayOff />
+                <StyledDisplayOff/>
             )}
         </>
     );
